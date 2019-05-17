@@ -12,7 +12,7 @@ Wykorzystywane biblioteki
 - SFML 2.5.1
 
 #### Pliki nagłówkowe
-Folder _headers_ należy dodać jako *Additional Include Directories*
+Folder _header_ należy dodać jako *Additional Include Directories*
 
 #### Wszystkie pliki *.hpp *.cpp należy dodać do projektu (np. przeciągając)
 
