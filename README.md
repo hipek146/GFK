@@ -19,7 +19,7 @@ Folder _headers_ należy dodać jako *Additional Include Directories*
 #### Folder resurce
 Należy skopiować do folderu z projektem  
   
-Dodatkowo (opcjonalnie) można utworzyć plik config podając np. rozmiary ekranu
+Dodatkowo (opcjonalnie) można utworzyć plik *config.ini* podając np. rozmiary ekranu
 ```
 width: 1400
 height: 800
