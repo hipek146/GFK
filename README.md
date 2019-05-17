@@ -16,7 +16,7 @@ Folder _header_ należy dodać jako *Additional Include Directories*
 
 #### Wszystkie pliki *.hpp *.cpp należy dodać do projektu (np. przeciągając)
 
-#### Folder resurce
+#### Folder resource
 Należy skopiować do folderu z projektem  
   
 Dodatkowo (opcjonalnie) można utworzyć plik *config.ini* podając np. rozmiary ekranu
