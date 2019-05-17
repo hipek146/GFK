@@ -38,6 +38,6 @@ _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 służą w *Visual Studio* do rejestrowania wycieków pamięci w trybie *Debug*
 ## Autorzy
 
-Piotr Litwin
-Paweł Krężel
-Michał Pabjan
+Piotr Litwin  
+Paweł Krężel  
+Michał Pabjan  
