@@ -213,6 +213,7 @@ class Touchpad : public GUI, public sf::Transformable
 public:
 	Touchpad(sf::Vector2u *newSize)
 	{
+		size = newSize;
 		SetSize({ static_cast<float>(newSize->x), static_cast<float>(newSize->y) });
 	}
 
@@ -223,6 +224,11 @@ public:
 	{
 		rect.width = newSize.x;
 		rect.height = newSize.y;
+	}
+	virtual void Resize()
+	{
+		rect.width = static_cast<float>(size->x);
+		rect.height = static_cast<float>(size->y);
 	}
 	virtual void SetPosition(const sf::Vector2f &newPosition) override
 	{
@@ -240,4 +246,6 @@ public:
 	{
 		screen->AddEvent(&(this->rect), screen, this, callback, EventType::Pressed);
 	}
+protected:
+	sf::Vector2u *size;
 };
