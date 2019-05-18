@@ -110,6 +110,14 @@ public:
 	//////////////////////////////////////////////////////////////////////
 	sf::RenderWindow *window;
 	sf::Vector2u size;
+
+
+	struct {
+		int x = 0;
+		int y = 0;
+		bool leftClick;
+	}mouse;
+
 private:
 	sf::Event event;
 	sf::Cursor cursor;
@@ -117,9 +125,4 @@ private:
 	bool cursorHandOK = false;
 	std::deque<EventHandle> handle;
 
-	struct {
-		int x = 0;
-		int y = 0;
-		bool leftClick;
-	}mouse;
 };
