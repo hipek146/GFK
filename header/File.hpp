@@ -25,23 +25,23 @@ namespace File
 	{
 		std::wifstream file;
 		file.open((std::string)path);
-
-		file.seekg(0, file.end);
-		int length = static_cast<int>(file.tellg());
-		file.seekg(0, file.beg);
-		length -= static_cast<int>(std::count(std::istreambuf_iterator<wchar_t>(file), std::istreambuf_iterator<wchar_t>(), '\n'));
-		file.seekg(0, file.beg);
-		wchar_t *buffer = new wchar_t[length + 1];
-
-		wchar_t bufforName[265];
-		wchar_t bufforValue[256];
-		bool flag = true;
-		unsigned short i = 0, k = 0;
-		int a = 0;
-		file.read(buffer, length);
-		buffer[length] = '\0';
 		if (file)
 		{
+			file.seekg(0, file.end);
+			int length = static_cast<int>(file.tellg());
+			file.seekg(0, file.beg);
+			length -= static_cast<int>(std::count(std::istreambuf_iterator<wchar_t>(file), std::istreambuf_iterator<wchar_t>(), '\n'));
+			file.seekg(0, file.beg);
+			wchar_t *buffer = new wchar_t[length + 1];
+
+			wchar_t bufforName[265];
+			wchar_t bufforValue[256];
+			bool flag = true;
+			unsigned short i = 0, k = 0;
+			int a = 0;
+			file.read(buffer, length);
+			buffer[length] = '\0';
+		
 			while (i < length - 1)
 			{
 				k = 0;
@@ -70,14 +70,13 @@ namespace File
 				a++;
 				data->Add(bufforName, bufforValue);
 			}
+			file.close();
+			delete[] buffer;
 		}
 		else
 		{
 			file.close();
-			delete[] buffer;
 			throw sf::String("Cannot read file");
 		}
-		file.close();
-		delete[] buffer;
 	}
 }
