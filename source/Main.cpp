@@ -16,7 +16,7 @@ int main()
 {
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	Config config(L"config.ini");
+	Config config;
 	
 	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł");
 	window.setFramerateLimit(60);

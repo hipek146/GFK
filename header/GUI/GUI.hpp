@@ -41,7 +41,7 @@ class Button : public GUI
 public:
 	Button(sf::String string)
 	{
-		if (!font.loadFromFile("resource/fonts/SimsLLHP.ttf"))
+		if (!font.loadFromFile("GFK/resource/fonts/SimsLLHP.ttf"))
 		{
 			throw L"Cannot open font file";
 		}

@@ -32,7 +32,7 @@ void Menu::CreateScreen()
 {
 	background = new sf::Sprite;
 	backgroundTexture = new sf::Texture();
-	if (!backgroundTexture->loadFromFile("resource/images/menu-background.png"))
+	if (!backgroundTexture->loadFromFile("GFK/resource/images/menu-background.png"))
 	{
 		throw "Cannot load menu background image";
 	}
