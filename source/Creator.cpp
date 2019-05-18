@@ -45,9 +45,11 @@ void Creator::ResizeScreen()
 {
 	layoutSize = { 300, size->y };
 	layoutPosition = { size->x - 300.0f, 0 };
-
+	
 	if (layout != nullptr)
 	{
+		//touchpad->SetSize({ (float)size->x, (float)size->y });
+		touchpad->Resize();
 		layout->Resize();
 		layout->SetPosition(layoutPosition);
 	}
