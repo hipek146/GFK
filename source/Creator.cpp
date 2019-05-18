@@ -1,5 +1,6 @@
 ﻿#include "Creator.hpp"
 #include "Dictionary.hpp"
+#include <iostream>
 
 
 Creator::Creator(App *parent) : Screen(parent) {}
@@ -54,7 +55,7 @@ void Creator::ResizeScreen()
 
 void Creator::MouseMove()
 {
-	
+	std::cout << "x: " << app->event->mouse.x << "\ty: " << app->event->mouse.y << std::endl;
 }
 
 void Creator::MouseClick()
