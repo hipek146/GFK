@@ -12,14 +12,14 @@ Wykorzystywane biblioteki
 - SFML 2.5.1
 
 #### Pliki nagłówkowe
-Folder _headers_ należy dodać jako *Additional Include Directories*
+Folder _header_ należy dodać jako *Additional Include Directories*
 
 #### Wszystkie pliki *.hpp *.cpp należy dodać do projektu (np. przeciągając)
 
-#### Folder resurce
+#### Folder resource
 Należy skopiować do folderu z projektem  
   
-Dodatkowo (opcjonalnie) można utworzyć plik config podając np. rozmiary ekranu
+Dodatkowo (opcjonalnie) można utworzyć plik *config.ini* podając np. rozmiary ekranu
 ```
 width: 1400
 height: 800
@@ -38,6 +38,6 @@ _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 służą w *Visual Studio* do rejestrowania wycieków pamięci w trybie *Debug*
 ## Autorzy
 
-Piotr Litwin
-Paweł Krężel
-Michał Pabjan
+Piotr Litwin  
+Paweł Krężel  
+Michał Pabjan  
