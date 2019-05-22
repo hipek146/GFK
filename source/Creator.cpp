@@ -40,6 +40,9 @@ void Creator::ClearScreen() {
 
 	delete layout;
 	layout = nullptr;
+
+	delete workspace;
+	workspace = nullptr;
 }
 
 void Creator::ResizeScreen() {
