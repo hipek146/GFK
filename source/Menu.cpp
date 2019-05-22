@@ -40,7 +40,7 @@ void Menu::CreateScreen()
 
 	ResizeScreen();
 	
-	layout = new MenuLayout(size);
+	layout = new MenuLayout(*size);
 	layout->Add(new Button(L"Game"));
 	layout->ADD(new Button(L"Creator"), &Menu::PressedCreator);
 	layout->Add(new Button(L"Options"));
@@ -70,6 +70,6 @@ void Menu::ResizeScreen()
 
 	if (layout != nullptr)
 	{
-		layout->Resize();
+		layout->SetSize({ static_cast<float>(size->x), static_cast<float>(size->y) });
 	}
 }

@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include <functional>
 #include <deque>
+#include <iostream>
 
 class Screen;
 class Menu;
@@ -46,6 +47,7 @@ private:
 	bool isOk[EventType::count] = {};
 	GUI *elementHandle;
 	bool mouseOver = false;
+	bool disable = false;
 };
 
 class Event
@@ -96,6 +98,22 @@ public:
 		handle.push_front({rect, screen, newElement, callback, type});
 	}
 
+	///////////////////////////// Disable /////////////////////////////////
+	/// \brief Ustawia zdarzenia jako nieaktywne
+	///
+	/// \param elementToRemove Wskaźnik na element GUI, którego zdarzenia mają zostać uznane za nieaktywne
+	///
+	//////////////////////////////////////////////////////////////////////
+	void Disable(GUI *elementToDisable);
+
+	///////////////////////////// Disable /////////////////////////////////
+	/// \brief Ustawia zdarzenia jako aktywne (domyślnie)
+	///
+	/// \param elementToRemove Wskaźnik na element GUI, którego zdarzenia mają zostać uznane za aktywne
+	///
+	//////////////////////////////////////////////////////////////////////
+	void Enable(GUI *elementToEnable);
+
 	///////////////////////////// Remove /////////////////////////////////
 	/// \brief Usuwa zdarzenia z pojemnika (handle)
 	///
@@ -119,6 +137,8 @@ public:
 	}mouse;
 
 private:
+	void FindAndSet(GUI *elementToSet, int setType);
+
 	sf::Event event;
 	sf::Cursor cursor;
 	sf::Cursor cursorHand;

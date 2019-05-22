@@ -45,6 +45,10 @@ void Event::operator () ()
 	{
 		if (element.rect != nullptr && element.rect->contains(mouse.x, mouse.y))
 		{
+			if (element.disable)
+			{
+				continue;
+			}
 			if (event.type == sf::Event::MouseButtonPressed && element.isOk[EventType::Pressed])
 			{
 				element.callbackHandle[EventType::Pressed]();
@@ -83,12 +87,39 @@ void Event::operator () ()
 
 void Event::Remove(GUI *elementToRemove)
 {
+	FindAndSet(elementToRemove, 0);
+}
+
+void Event::Disable(GUI *elementToDisable)
+{
+	FindAndSet(elementToDisable, 1);
+}
+
+void Event::Enable(GUI *elementToEnable)
+{
+	FindAndSet(elementToEnable, 2);
+}
+
+void Event::FindAndSet(GUI *elementToSet, int setType)
+{
 	for (auto iterator = handle.begin(); iterator != handle.end(); )
 	{
-		if (iterator->elementHandle == elementToRemove)
+		if (iterator->elementHandle == elementToSet)
 		{
-			if(iterator->mouseOver) window->setMouseCursor(cursor);
-			iterator = handle.erase(iterator);
+			if (setType == 0)
+			{
+				if (iterator->mouseOver) window->setMouseCursor(cursor);
+				handle.erase(iterator);
+			}
+			else if (setType == 1)
+			{
+				iterator->disable = true;
+			}
+			else if (setType == 2)
+			{
+				iterator->disable = false;
+			}
+			return;
 		}
 		else
 		{

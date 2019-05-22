@@ -12,8 +12,9 @@ namespace ConfigNamespace
 		};
 
 		parameter defaultParameter[] = {
-		{	L"width",		600		},
-		{	L"height",		400		}
+		{	L"width",			600		},
+		{	L"height",			400		},
+		{	L"antialiasing",	8		}
 		};
 
 		int size = sizeof(defaultParameter) / sizeof(parameter);

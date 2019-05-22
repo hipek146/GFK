@@ -17,8 +17,11 @@ int main()
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Config config(L"config.ini");
-	
-	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł");
+
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = config(L"antialiasing");
+
+	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
 
 	Event event(window);

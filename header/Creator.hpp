@@ -20,5 +20,9 @@ private:
 	sf::Vector2f layoutPosition;
 	sf::Vector2u layoutSize;
 	MenuLayout *layout;
+	MenuLayout *layout2;
+	MenuLayout *layout3;
 	Touchpad *touchpad;
+	CreatorLayout *creatorLayout;
+	CreatorMenu *menu1;
 };

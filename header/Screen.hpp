@@ -23,6 +23,16 @@ public:
 		app->event->Remove(element);
 	}
 
+	void DisableEvent(GUI *element)
+	{
+		app->event->Disable(element);
+	}
+
+	void EnableEvent(GUI *element)
+	{
+		app->event->Enable(element);
+	}
+
 	sf::Vector2u *size;
 protected:
 	App *app;
