@@ -29,12 +29,12 @@ int main()
 	{
 		window.clear(sf::Color::White);
 
-		while (window.pollEvent(event))
+		while (window.pollEvent(event))//wywołany rzutowanie z obiektu Event na sf::Event ?
 		{
-			event();
+			event();// zamiast switcha
 		}
 
-		window.draw(app);
+ 		window.draw(app);
 		window.display();
 	}
 	return 0;
