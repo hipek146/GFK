@@ -76,7 +76,7 @@ namespace File
 		else
 		{
 			file.close();
-			throw sf::String("Cannot read file");
+			// sf::String("Cannot read file");
 		}
 	}
 }
