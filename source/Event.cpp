@@ -3,11 +3,15 @@
 
 Event::Event(sf::RenderWindow &windowReference)
 {
-	cursor.loadFromSystem(sf::Cursor::Arrow);
-	if (cursorHand.loadFromSystem(sf::Cursor::Hand))
+	cursor[CursorType::Arrow].loadFromSystem(sf::Cursor::Arrow);
+	cursorOK[CursorType::Arrow] = true;
+	if (cursor[CursorType::Hand].loadFromSystem(sf::Cursor::Hand))
 	{
-		cursorHandOK = true;
+		cursorOK[CursorType::Hand] = true;
 	}
+	cursorSet = CursorType::Arrow;
+	cursorActive = cursorSet;
+
 	window = &windowReference;
 	size = window->getSize();
 }
@@ -41,6 +45,27 @@ void Event::operator () ()
 			}
 		}
 	}
+	else if (event.type == sf::Event::TextEntered)
+	{
+		for (auto &element : handle)
+		{
+			if (element.textInput && element.isParameterOk[EventParameterType::TextInput])
+			{
+				element.callbackParameterHandle[EventParameterType::TextInput](event.text.unicode);
+			}
+		}
+	}
+	else if (event.type == sf::Event::MouseButtonPressed)
+	{
+		if (textInputPtr != nullptr && textInputPtr->textInput)
+		{
+			textInputPtr->textInput = false;
+			if (textInputPtr->isOk[EventType::TextOff])
+			{
+				textInputPtr->callbackHandle[EventType::TextOff]();
+			}
+		}
+	}
 	for (auto &element : handle)
 	{
 		if (element.rect != nullptr && element.rect->contains(mouse.x, mouse.y))
@@ -49,9 +74,25 @@ void Event::operator () ()
 			{
 				continue;
 			}
-			if (event.type == sf::Event::MouseButtonPressed && element.isOk[EventType::Pressed])
+			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				element.callbackHandle[EventType::Pressed]();
+				if (element.isOk[EventType::Pressed])
+				{
+					element.callbackHandle[EventType::Pressed]();
+				}
+				if (element.isParameterOk[EventParameterType::TextInput])
+				{
+					textInputPtr = &element;
+					textInputPtr->textInput = true;
+					if (textInputPtr->isOk[EventType::TextOn])
+					{
+						textInputPtr->callbackHandle[EventType::TextOn]();
+					}
+				}
+			}
+			else if (event.type == sf::Event::MouseButtonReleased && element.isOk[EventType::Released])
+			{
+				element.callbackHandle[EventType::Released]();
 			}
 			else if (event.type == sf::Event::MouseMoved)
 			{
@@ -61,7 +102,7 @@ void Event::operator () ()
 				}
 				if (!element.mouseOver && element.isOk[EventType::MouseOver])
 				{
-					if (cursorHandOK) window->setMouseCursor(cursorHand);
+					if (cursorOK[CursorType::Hand]) cursorSet = CursorType::Hand;
 
 					element.callbackHandle[EventType::MouseOver]();
 					element.mouseOver = true;
@@ -70,6 +111,7 @@ void Event::operator () ()
 			break;
 		}
 	}
+	int length = handle.size();
 	for (auto &element : handle)
 	{
 		if (element.mouseOver && element.rect != nullptr && !element.rect->contains(mouse.x, mouse.y))
@@ -77,11 +119,23 @@ void Event::operator () ()
 			if (element.isOk[EventType::MouseOut])
 			{
 				element.callbackHandle[EventType::MouseOut]();
-			}
-			window->setMouseCursor(cursor);
-
+			}		
 			element.mouseOver = false;
 		}
+		else if (element.mouseOver)
+		{
+			length++;
+		}
+		--length;
+		if (length == 0)
+		{
+			cursorSet = CursorType::Arrow;
+		}
+	}
+	if (cursorSet != cursorActive)
+	{
+		window->setMouseCursor(cursor[cursorSet]);
+		cursorActive = cursorSet;
 	}
 }
 
@@ -108,7 +162,7 @@ void Event::FindAndSet(GUI *elementToSet, int setType)
 		{
 			if (setType == 0)
 			{
-				if (iterator->mouseOver) window->setMouseCursor(cursor);
+				if (iterator->mouseOver) window->setMouseCursor(cursor[CursorType::Arrow]);
 				handle.erase(iterator);
 			}
 			else if (setType == 1)

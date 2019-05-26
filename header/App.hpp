@@ -18,8 +18,9 @@ public:
 	friend class Creator;
 
 	sf::Vector2u *size;
-private:
 	Event *event;
+
+private:
 	Screen *menu;
 	Screen *creator;
 	

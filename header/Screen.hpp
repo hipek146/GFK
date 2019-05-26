@@ -17,6 +17,11 @@ public:
 	{
 		app->event->Add(rect, screen, element, callback, type);
 	}
+	template <typename T>
+	void AddEvent(sf::FloatRect *rect, T *screen, GUI *element, void(T::*callback)(sf::Uint32), int type)
+	{
+		app->event->Add(rect, screen, element, callback, type);
+	}
 
 	void RemoveEvent(GUI *element)
 	{
@@ -34,6 +39,5 @@ public:
 	}
 
 	sf::Vector2u *size;
-protected:
 	App *app;
 };
