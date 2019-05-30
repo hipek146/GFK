@@ -89,9 +89,9 @@ void Creator::MouseClick() {
 				workspace->bezier->isControlPoint = true;
 			}
 			else {
-				workspace->RepleacePoint(workspace->bezier->endPoint.x, workspace->bezier->endPoint.y);
+				//workspace->RepleacePoint(workspace->bezier->endPoint.x, workspace->bezier->endPoint.y);
 				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
-				workspace->bezier->pushVerices();
+				workspace->PushBesierPoints();
 				workspace->bezier->isControlPoint = false;
 			}
 			break;

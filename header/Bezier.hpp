@@ -1,6 +1,7 @@
 #pragma once 
 #include <iostream>
 #include <vector>
+#include "sfLine.hpp"
 #include <SFML/Graphics.hpp>
 
 
@@ -62,6 +63,6 @@ class Bezier{
 		sf::Vector2f controlPoint;
 		sf::VertexArray vertices;
 		bool isControlPoint = false;
-	private:
 		std::vector<sf::Vector2f> points;
+	private:
 	};

@@ -1,6 +1,5 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "sfLine.hpp"
 #include "Bezier.hpp"
 
 class Workspace : public sf::Drawable {
@@ -23,6 +22,7 @@ class Workspace : public sf::Drawable {
 		void DrawWorkspaceBorder(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje obramowke workspace, nie skaluje sie
 		void FillSpaceBetweenPoints(sf::RenderTarget& target, sf::RenderStates states) const;	// todo
 		void RepleacePoint(int x, int y);
+		void PushBesierPoints();
 		sf::Vector2f & getLastPoint();
 		Bezier *bezier;
 

@@ -150,3 +150,9 @@ void Workspace::RepleacePoint(int x, int y) {
 	mainPoints.pop_back();
 	mainPoints.push_back(sf::Vector2f(1.0*x, 1.0*y));
 }
+
+void Workspace::PushBesierPoints() {
+	for (std::vector<sf::Vector2f>::const_iterator a = bezier->points.begin(); a != bezier->points.end(); ++a) {
+		mainPoints.push_back(*a);
+	}
+}
