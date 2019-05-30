@@ -57,6 +57,8 @@ class Triangulation
 		std::vector <Triangle> m_triangles;
 		std::vector <sf::Vector2f> m_convexHullPoints;
 		std::vector <sf::Vector2f> m_reflexVertices;
+		std::vector <sf::Vector2f> m_earPoints;
+
 
 		sf::Vector2f m_lowestPoint;
 

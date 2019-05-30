@@ -51,8 +51,11 @@ void Triangulation::refresh() {
 	printPoints(m_inputedPoints, "zwykle: ");
 	printPoints(m_sortedPoints, "posortowane: ");
 	findConvexAndReflexPoints();
+	findEarsPoints();
 	printPoints(m_reflexVertices, "reflex: ");
 	printPoints(m_convexHullPoints, "convex: ");
+	printPoints(m_earPoints, "ear: ");
+
 }
 int Triangulation::findPoint(sf::Vector2f point, std::vector<sf::Vector2f> pointsVector)
 {
@@ -124,8 +127,7 @@ void Triangulation::findEarsPoints()
 		}
 
 		if (canAddEar) {
-					/// todo
-			break;
+			m_earPoints.push_back(m_inputedPoints[currentIndex]);
 		}
 	}
 }
