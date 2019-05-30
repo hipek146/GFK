@@ -50,12 +50,10 @@ class Bezier{
 
 		void DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const {
 			
-			sf::VertexArray currentVertices(sf::LinesStrip, 0);
-
-			for (std::vector<sf::Vector2f>::const_iterator a = points.begin(); a != points.end(); ++a)
-				currentVertices.append(sf::Vertex(*a, sf::Color::Black));
-
-			target.draw(currentVertices, states);
+			for (int i = 0; i < points.size() - 1; i++) {
+				sfLine currentLine(points[i], points[i + 1], sf::Color::Black, 3.0);
+				currentLine.draw(target, states);	
+			}
 		}
 
 		sf::Vector2f startPoint;
@@ -65,4 +63,5 @@ class Bezier{
 		bool isControlPoint = false;
 		std::vector<sf::Vector2f> points;
 	private:
+
 	};

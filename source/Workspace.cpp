@@ -5,11 +5,9 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 //	FillSpaceBetweenPoints(target, states);		todo
 	DrawLinesGroup(target, states);				// rysuje utworzone linie
 	//if
-	bezier->DrawCurvesGroup(target, states);
 	if (bezier->isControlPoint) {
 		bezier->CalcQuadBezier();
 		bezier->DrawCurrentCurve(target, states);
-		
 	}
 	else
 		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
@@ -39,9 +37,6 @@ void Workspace::Resize() {
 	//todo
 }
 
-void Workspace::DrawCurves(sf::RenderTarget & target, sf::RenderStates states) const {
-
-}
 
 void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const {
 

@@ -14,7 +14,6 @@ class Workspace : public sf::Drawable {
 		void DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje utworzone linie
 		void DrawCurrentLine(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje aktualna linie (ta nie utworzana)
 		void DrawDotsGroup(sf::RenderTarget& target, sf::RenderStates states) const;	// na razie nic tu nie ma, moze sie przydac
-		void DrawCurves(sf::RenderTarget & target, sf::RenderStates states) const;
 		void AddPoint(int x, int y);	// dodaje punkt do wektora mainPoints
 		void UpdateMousePosition(int x, int y);	// podobno nie trzeba tego
 		inline bool CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const;	// sprawdza kolizje dwoch lini
