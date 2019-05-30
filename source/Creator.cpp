@@ -28,7 +28,8 @@ void Creator::CreateScreen() {
 	layout = new MenuLayout(&layoutSize, &layoutPosition);
 //	layout->Add(new Button("Przycisk 1")); // Niedobrze tylko go widać
 	layout->Add(new Button("Button 1"), this); // Dobry przycisk bez podłączonej funkcji
-	layout->ADD_BLANK(new Button("Button 2")); // To samo co wyżej tylko "this" schowane w makro
+	//layout->ADD_BLANK(new Button("Button 2")); // To samo co wyżej tylko "this" schowane w makro
+	layout->Add(new Button(L"Bezier "), this, &Creator::ChangeDrawingType); //Przycisk z podłączoną funkcją
 	layout->Add(new Button(L"Back to Menu"),this, &Creator::GoToMenu); //Przycisk z podłączoną funkcją
 	layout->ADD(new Button(L"Exit"), &Creator::Exit);  // To samo co wyżej tylko "this" schowane w makro
 }
@@ -76,7 +77,31 @@ void Creator::MouseClick() {
 	int y = app->event->mouse.y;		// edit: podobno do app mozna sie wszedzie dostac, potem sie refaktoryzacje zrobi
 
 	if (workspace->isMouseInWorkspaceArea(x, y)) {
-		workspace->AddPoint(x, y);
+		switch (drawingType) {
+		case LINE:
+			workspace->AddPoint(x, y);
+
+			break;
+		case QUAD_BEZIER:
+			if (!workspace->bezier->isControlPoint) {
+				workspace->bezier->setEndPoint(1.0 * x,  1.0 * y);
+				workspace->bezier->setStartPoint(workspace->getLastPoint());
+				workspace->bezier->isControlPoint = true;
+			}
+			else {
+				workspace->RepleacePoint(workspace->bezier->endPoint.x, workspace->bezier->endPoint.y);
+				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
+				workspace->bezier->pushVerices();
+				workspace->bezier->isControlPoint = false;
+			}
+			break;
+		case CUBE_BEZIER:
+
+			break;
+		default:
+
+			break;
+		}
 	}
 }
 void Creator::Exit() {
@@ -86,3 +111,6 @@ void Creator::GoToMenu() {
 	app->LoadScreen(app->menu);
 }
  
+void Creator::ChangeDrawingType() {
+	drawingType = QUAD_BEZIER;
+}

@@ -14,13 +14,21 @@ public:
 	virtual void ClearScreen() override;
 	virtual void ResizeScreen() override;
 
+
 private:
 
 	void MouseMove();
 	void MouseClick();
 	void Exit();
 	void GoToMenu();
-	
+	void ChangeDrawingType();
+
+	enum drawingOptions {
+		LINE,
+		QUAD_BEZIER,
+		CUBE_BEZIER
+	};
+	unsigned int drawingType = LINE;
 	sf::Vector2f workspacePosition = { 0.0, 0.0 };
 	sf::Vector2u workspaceSize;
 	sf::Vector2f layoutPosition;
@@ -29,4 +37,5 @@ private:
 	MenuLayout *layout;
 	Workspace *workspace;
 	Touchpad *touchpad;
+	
 };

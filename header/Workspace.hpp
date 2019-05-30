@@ -1,5 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "sfLine.hpp"
+#include "Bezier.hpp"
 
 class Workspace : public sf::Drawable {
 	
@@ -13,20 +15,28 @@ class Workspace : public sf::Drawable {
 		void DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje utworzone linie
 		void DrawCurrentLine(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje aktualna linie (ta nie utworzana)
 		void DrawDotsGroup(sf::RenderTarget& target, sf::RenderStates states) const;	// na razie nic tu nie ma, moze sie przydac
+		void DrawCurves(sf::RenderTarget & target, sf::RenderStates states) const;
 		void AddPoint(int x, int y);	// dodaje punkt do wektora mainPoints
 		void UpdateMousePosition(int x, int y);	// podobno nie trzeba tego
 		inline bool CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const;	// sprawdza kolizje dwoch lini
 		bool CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const;	// sprawdza wszystkie kolizje aktualnej lini
 		void DrawWorkspaceBorder(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje obramowke workspace, nie skaluje sie
 		void FillSpaceBetweenPoints(sf::RenderTarget& target, sf::RenderStates states) const;	// todo
+		void RepleacePoint(int x, int y);
+		sf::Vector2f & getLastPoint();
+		Bezier *bezier;
+
 	private:
 
 		sf::Vector2f mousePosition;	// podobno nie trzeba
 		std::vector <sf::Vector2f> mainPoints;	// grupa stworzonych punktow, na jej podstawie rysujemy linie, obliczamy kolizje itd
 		sf::Vector2f startingPoint;	// punkt poczatkowy, na razie ustawiony na sztywno
 		sf::Vector2f endingPoint;	// nie jest koniecznie, moze sie przydac w trybie "debug"
+		sf::Vector2f lastPoint; // ostatnio narysowany punkt idac wzdloz powierzchni 
 		sf::Vector2f *position;		// pozycja workspace
 		sf::Vector2u *size;		// size workspace
 		sf::Vector2u originalSize;	// poczatkowy rozmiar okna (po wejsciu do workspace)
 
 };
+
+

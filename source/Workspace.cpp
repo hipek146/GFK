@@ -1,17 +1,25 @@
 #include "Workspace.hpp"
-#include "sfLine.hpp"
 
-void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 
 //	FillSpaceBetweenPoints(target, states);		todo
 	DrawLinesGroup(target, states);				// rysuje utworzone linie
-	DrawCurrentLine(target, states);			// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
+	//if
+	bezier->DrawCurvesGroup(target, states);
+	if (bezier->isControlPoint) {
+		bezier->CalcQuadBezier();
+		bezier->DrawCurrentCurve(target, states);
+		
+	}
+	else
+		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
 //	DrawDotsGroup(target, states);				// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
 	DrawWorkspaceBorder(target, states);
 }
 
 Workspace::Workspace(sf::Vector2u *newSize, sf::Vector2f *newPosition) : size(newSize), position(newPosition) {
 
+	bezier = new Bezier();
 	originalSize = *size;
 	startingPoint = { 0.0, static_cast<float>(size->y / 2.0) };		// punkt poczatkowy rysowania, potem sie zrobi zeby uzytkownik mogl go wybrac
 	endingPoint = mousePosition = startingPoint;					// ostatni punkt rysowania, na razie to jest ten sam
@@ -29,6 +37,10 @@ bool Workspace::isMouseInWorkspaceArea(double x, double y) {		// sprawdza czy my
 
 void Workspace::Resize() {
 	//todo
+}
+
+void Workspace::DrawCurves(sf::RenderTarget & target, sf::RenderStates states) const {
+
 }
 
 void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -122,8 +134,19 @@ void Workspace::UpdateMousePosition(int x, int y) {			// podobno nie potrzebna, 
 
 	mousePosition.x = static_cast<double>(x);
 	mousePosition.y = static_cast<double>(y);
+	bezier->setControlPoint(x, y);
 }
 
 void Workspace::DrawDotsGroup(sf::RenderTarget& target, sf::RenderStates states) const {
 	// moze sie przydac 
+}
+
+
+sf::Vector2f & Workspace::getLastPoint() {
+	return mainPoints.back();
+}
+
+void Workspace::RepleacePoint(int x, int y) {
+	mainPoints.pop_back();
+	mainPoints.push_back(sf::Vector2f(1.0*x, 1.0*y));
 }
