@@ -1,6 +1,7 @@
 #pragma once
 #include "Screen.hpp"
 #include "GUI/GUI.hpp"
+#include "Workspace.hpp"
 
 class Creator : public Screen
 {
@@ -87,4 +88,6 @@ private:
 	VectorGUI *vectorWaterPoints;
 
 	MenuLayout *layoutOptions;
+
+	Workspace workspace;
 };

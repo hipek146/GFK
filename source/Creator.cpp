@@ -13,6 +13,7 @@ Creator::~Creator()
 void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*creatorLayout);
+	workspace.draw(target, states);
 }
 
 
