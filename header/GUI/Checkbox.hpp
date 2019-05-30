@@ -37,8 +37,14 @@ public:
 		rect.height = size.y * 0.8f;
 
 		shape.setSize({ rect.width, rect.height });
-		Xtext.setCharacterSize(static_cast<unsigned int>(rect.height * 1.3f));
-
+		if (static_cast<unsigned int>(rect.height * 1.3f) < 60)
+		{
+			Xtext.setCharacterSize(static_cast<unsigned int>(rect.height * 1.3f));
+		}
+		else
+		{
+			Xtext.setCharacterSize(60);
+		}
 		SetTextSize();
 
 		SetPosition({ rect.left + (oldSize.x) / 2.0f, rect.top + (oldSize.y) / 2.0f });
@@ -50,16 +56,16 @@ public:
 
 		shape.setPosition(rect.left , rect.top);
 		sf::FloatRect XtextSize = Xtext.getLocalBounds();
-		Xtext.setPosition(rect.left + rect.height * 0.1f , rect.top - XtextSize.top + rect.height * 0.1f);
+		Xtext.setPosition(rect.left + (rect.width - XtextSize.width) / 2.0f, rect.top - XtextSize.top + (rect.height - XtextSize.height) / 2.0f);
 		sf::FloatRect textSize = text.getLocalBounds();
 		text.setPosition(newPosition.x - textSize.width / 2.0f + size.y / 2.0f, newPosition.y - textSize.height / 2.0f - textSize.top);
 	}
 	void SetTextSize()
 	{
 		unsigned int characterSize = static_cast<unsigned int>(size.y * 0.6f);
-		if (characterSize > 80)
+		if (characterSize > 60)
 		{
-			characterSize = 80;
+			characterSize = 60;
 		}
 		text.setCharacterSize(characterSize);
 		sf::FloatRect textSize = text.getLocalBounds();

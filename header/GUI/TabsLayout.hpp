@@ -131,10 +131,7 @@ public:
 		{
 			element->Enable();
 		}
-		for (auto &element : layouts)
-		{
-			element->Enable();
-		}
+		layouts[active]->Enable();
 	}
 private:
 	sf::RectangleShape shape;

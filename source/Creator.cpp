@@ -24,58 +24,127 @@ void Creator::CreateScreen()
 	touchpad->onMouseMove(this, &Creator::MouseMove);
 	touchpad->onClick(this, &Creator::MouseClick);
 	
+	CreateInterface();
+}
+
+void Creator::ClearScreen()
+{
+	delete touchpad;
+	touchpad = nullptr;
+
+	ClearInterface();
+}
+
+void Creator::ResizeScreen()
+{
+	layoutSize = { 400, size->y };
+	layoutPosition = { size->x - 400.0f, 0 };
+	
+	if (creatorLayout != nullptr)
+	{
+		touchpad->Resize();
+		creatorLayout->SetSize({ static_cast<float>(layoutSize.x), static_cast<float>(layoutSize.y) });
+		creatorLayout->SetPosition(layoutPosition);
+	}
+}
+
+
+void Creator::MouseMove()
+{
+}
+
+void Creator::MouseClick()
+{
+}
+
+void Creator::Generator()
+{
+}
+
+void Creator::CheckPoints()
+{
+	if (points) points = false; else points = true;
+
+	if (points)
+	{
+		vectorDrawPoints->Active(1);
+		vectorEditPoints->Active(1);
+		vectorWaterPoints->Active(1);
+	}
+	else
+	{
+		vectorDrawPoints->Inactive(1);
+		vectorEditPoints->Inactive(1);
+		vectorWaterPoints->Inactive(1);
+	}
+
+}
+
+
+void Creator::CreateInterface()
+{
 	creatorLayout = new CreatorLayout(this, layoutSize, layoutPosition);
 
 	creatorTabs = new CreatorTabs(layoutSize);
 
 	tabsLayout = new TabsLayout(layoutSize);
 
-	layout = new MenuLayout(layoutSize);
-	layout->Add(new Button("Przycisk 1")); // Niedobrze tylko go widać
-	layout->Add(new Button("Przycisk 1"), this); // Dobry przycisk bez podłączonej funkcji
-	layout->ADD_BLANK(new Button("Przycisk 3 o bardzo dlugiej nazwie")); // To samo co wyżej tylko "this" schowane w makro
-	layout->Add(new Button(L"Let me leave..."),this, &Creator::Exit); //Przycisk z podłączoną funkcją
-	layout->ADD(new Button(L"Fuck go back!"), &Creator::GoToMenu);  // To samo co wyżej tylko "this" schowane w makro
+	/////////////////////////////Rysuj//////////////////////////////
+	containerDraw = new ContainerGUI(layoutSize);
 
-	tabsLayout->Add(new Button(L"Rysuj"), this, layout);
+	vectorDrawMode = new VectorGUI(layoutSize);
+	vectorDrawMode->Add(new Button(L"Odcinki"), this, &Creator::Section);
+	vectorDrawMode->Add(new Button(L"Krzywe Beziera"), this, &Creator::Bezier);
+	vectorDrawMode->EnableOneChoice(1);
+	vectorDrawMode->Vertical();
+	vectorDrawMode->SetSpace(2.0f);
+	vectorDrawMode->SetPadding(10.0f);
 
-	layout2 = new MenuLayout(layoutSize);
-	layout2->ADD(new Button(L"Pierwszy"), &Creator::GoToMenu);
-	layout2->ADD(new Button(L"Drugi"), &Creator::GoToMenu);
-	layout2->ADD(new Button(L"Trzeci"), &Creator::Exit);
+	vectorDrawPoints = new VectorGUI(layoutSize);
+	vectorDrawPoints->Add(new Checkbox(L"Pokaz punkty"), this, &Creator::DrawPoints);
+
+	vectorDrawGenerator = new VectorGUI(layoutSize);
+	vectorDrawGenerator->Add(new Button(L"Generuj teren"), this, &Creator::Generator);
+	vectorDrawGenerator->SetPadding(8.0f);
 
 
-	containerGUI = new ContainerGUI(layoutSize);
-	vectorGUI_1 = new VectorGUI(layoutSize);
-	vectorGUI_1->Add(new Button(L"vector"), this, &Creator::MouseClick);
-	vectorGUI_1->Add(new Button(L"Vector2"), this, &Creator::MouseClick);
-	vectorGUI_1->Add(new Button(L"GUI"), this, &Creator::MouseClick);
-	vectorGUI_1->SetSpace(2.0f);
-	vectorGUI_1->SetPadding(10.0f);
-	vectorGUI_1->EnableOneChoice(2);
+	containerDraw->Add(this, vectorDrawMode);
+	containerDraw->SetElementSizeY(1, 140.0f);
+	containerDraw->Add(this, vectorDrawPoints);
+	containerDraw->SetElementSizeY(2, 50.0f);
+	containerDraw->SetBottom(2);
+	containerDraw->Add(this, vectorDrawGenerator);
+	containerDraw->SetBottom(3);
+	tabsLayout->Add(new Button(L"Rysuj"), this, containerDraw);
 
-	vectorGUI_2 = new VectorGUI(layoutSize);
-	//vectorGUI_2->Add(new Button(L"lol"), this, &Creator::MouseClick);
-	//vectorGUI_2->Add(new Button(L"xD"), this, &Creator::MouseClick);
-	vectorGUI_2->Add(new ScrollBar(&scrollX), this, &Creator::MouseClick);
 
-	vectorGUI_3 = new VectorGUI(layoutSize);
-	vectorGUI_3->Add(new Checkbox(L"Opcja"), this, &Creator::MouseMove);
-	vectorGUI_3->Add(new Checkbox(L"Dwojeczka"), this, &Creator::MouseMove);
-	vectorGUI_3->EnableOneChoice();
+	///////////////////////////Edytuj///////////////////////////////
+	containerEdit = new ContainerGUI(layoutSize);
+	vectorEditMode = new VectorGUI(layoutSize);
+	vectorEditMode->Add(new Button(L"Gorki"), this, &Creator::Hill);
+	vectorEditMode->Add(new Button(L"Dolki"), this, &Creator::Hole);
+	vectorEditMode->SetSpace(2.0f);
+	vectorEditMode->SetPadding(10.0f);
+	vectorEditMode->EnableOneChoice(2);
 
-	vectorGUI_4 = new VectorGUI(layoutSize);
-	vectorGUI_4->Add(new TextInput(L"Jakis tekst input"), this, &Creator::MouseMove);
+	vectorEditScroll = new VectorGUI(layoutSize);
+	vectorEditScroll->Add(new ScrollBar(&editScroll), this, &Creator::Blank);
 
-	containerGUI->Add(this, vectorGUI_1);
-	containerGUI->Add(this, vectorGUI_2);
-	containerGUI->Add(this, vectorGUI_3);
-	containerGUI->Add(this, vectorGUI_4);
+	vectorEditPoints = new VectorGUI(layoutSize);
+	vectorEditPoints->Add(new Checkbox(L"Pokaz punkty"), this, &Creator::EditPoints);
 
-	tabsLayout->Add(new Button(L"Edytuj"), this, containerGUI);
+
+	containerEdit->Add(this, vectorEditMode);
+	containerEdit->Add(this, vectorEditScroll);
+	containerEdit->SetElementSizeY(2, 42.0f);
+	containerEdit->Add(this, vectorEditPoints);
+	containerEdit->SetElementSizeY(3, 50.0f);
+	containerEdit->SetBottom(3);
+
+	tabsLayout->Add(new Button(L"Edytuj"), this, containerEdit);
 
 	creatorTabs->Add(new Button(L"Teren"), this, tabsLayout);
-///////////////////////////////////////////////////////////////
+	///////////////////////////Woda///////////////////////////////
 	containerWater = new ContainerGUI(layoutSize);
 
 	vectorWaterBoxes = new VectorGUI(layoutSize);
@@ -88,39 +157,34 @@ void Creator::CreateScreen()
 	containerWater->SetElementSizeY(1, 120.0f);
 
 	vectorWaterScroll = new VectorGUI(layoutSize);
-	vectorWaterScroll->Add(new ScrollBar(&scrollX), this, &Creator::MouseClick);
+	vectorWaterScroll->Add(new ScrollBar(&waterScroll), this, &Creator::Blank);
 
 	containerWater->Add(this, vectorWaterScroll);
-	containerWater->SetElementSizeY(2, 38.0f);
+	containerWater->SetElementSizeY(2, 42.0f);
 	containerWater->Hide(2);
 
+	vectorWaterPoints = new VectorGUI(layoutSize);
+	vectorWaterPoints->Add(new Checkbox(L"Pokaz punkty"), this, &Creator::WaterPoints);
+
+	containerWater->Add(this, vectorWaterPoints);
+	containerWater->SetElementSizeY(3, 50.0f);
+	containerWater->SetBottom(3);
+
 	creatorTabs->Add(new Button(L"Woda"), this, containerWater);
-///////////////////////////////////////////////////////////////
+
+	/////////////////////////Opcje/////////////////////////////////
 	layoutOptions = new MenuLayout(layoutSize);
 	layoutOptions->ADD_BLANK(new Button(L"Zapisz"));
 	layoutOptions->ADD_BLANK(new Button(L"Wczytaj"));
-	layoutOptions->ADD(new Button(L"Wstecz"), &Creator::GoToMenu);;
+	layoutOptions->ADD(new Button(L"Wstecz"), &Creator::GoToMenu);
 	layoutOptions->ADD(new Button(L"Wyjscie"), &Creator::Exit);
 
 	creatorTabs->Add(new Button(L"Opcje"), this, layoutOptions);
-///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
 	creatorLayout->Add(creatorTabs);
 }
-
-void Creator::ClearScreen()
+void Creator::ClearInterface()
 {
-	delete touchpad;
-	touchpad = nullptr;
-
-	delete layout;
-	layout = nullptr;
-
-	delete layout2;
-	layout2 = nullptr;
-
-	delete layoutOptions;
-	layoutOptions = nullptr;
-
 	delete creatorLayout;
 	creatorLayout = nullptr;
 
@@ -130,20 +194,29 @@ void Creator::ClearScreen()
 	delete tabsLayout;
 	tabsLayout = nullptr;
 
-	delete containerGUI;
-	containerGUI = nullptr;
+	delete containerDraw;
+	containerDraw = nullptr;
 
-	delete vectorGUI_1;
-	vectorGUI_1 = nullptr;
+	delete vectorDrawMode;
+	vectorDrawMode = nullptr;
 
-	delete vectorGUI_2;
-	vectorGUI_2 = nullptr;
+	delete vectorDrawPoints;
+	vectorDrawPoints = nullptr;
 
-	delete vectorGUI_3;
-	vectorGUI_3 = nullptr;
+	delete vectorDrawGenerator;
+	vectorDrawGenerator = nullptr;
 
-	delete vectorGUI_4;
-	vectorGUI_4 = nullptr;
+	delete containerEdit;
+	containerEdit = nullptr;
+
+	delete vectorEditMode;
+	vectorEditMode = nullptr;
+
+	delete vectorEditScroll;
+	vectorEditScroll = nullptr;
+
+	delete vectorEditPoints;
+	vectorEditPoints = nullptr;
 
 	delete containerWater;
 	containerWater = nullptr;
@@ -153,46 +226,11 @@ void Creator::ClearScreen()
 
 	delete vectorWaterScroll;
 	vectorWaterScroll = nullptr;
+
+	delete vectorWaterPoints;
+	vectorWaterPoints = nullptr;
+
+	delete layoutOptions;
+	layoutOptions = nullptr;
 }
 
-void Creator::ResizeScreen()
-{
-	layoutSize = { 400, size->y };
-	layoutPosition = { size->x - 400.0f, 0 };
-	
-	if (layout != nullptr)
-	{
-		touchpad->Resize();
-		creatorLayout->SetSize({ static_cast<float>(layoutSize.x), static_cast<float>(layoutSize.y) });
-		creatorLayout->SetPosition(layoutPosition);
-	}
-}
-
-void Creator::SimpleWater()
-{
-	containerWater->Hide(2);
-}
-
-void Creator::SpillWater()
-{
-	containerWater->Show(2);
-}
-
-
-void Creator::MouseMove()
-{
-	//std::cout << "x: " << app->event->mouse.x << "\ty: " << app->event->mouse.y << std::endl;
-}
-
-void Creator::MouseClick()
-{
-	std::cout << "x-> " << scrollX << std::endl;
-}
-void Creator::Exit()
-{
-	app->event->window->close();
-}
-void Creator::GoToMenu()
-{
-	app->LoadScreen(app->menu);
-}

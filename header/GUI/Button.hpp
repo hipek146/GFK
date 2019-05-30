@@ -94,13 +94,24 @@ public:
 		if (over) MouseOver();
 		else MouseOut();
 	}
+	virtual void SetEvents(Screen *newScreen) override
+	{
+		parent = newScreen;
+		parent->AddEvent(&rect, this, dynamic_cast<GUI*>(this), &Button::OnClick, EventType::Pressed);
+	}
+
+	void OnClick()
+	{
+		Callback();
+		callbackHandle();
+	}
 private:
 	void SetTextSize()
 	{
 		unsigned int characterSize = static_cast<unsigned int>(rect.height * 0.6f);
-		if (characterSize > 80)
+		if (characterSize > 60)
 		{
-			characterSize = 80;
+			characterSize = 60;
 		}
 		text.setCharacterSize(characterSize);
 		sf::FloatRect textSize = text.getLocalBounds();

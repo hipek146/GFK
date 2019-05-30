@@ -142,6 +142,23 @@ public:
 			++i;
 		}
 	}
+	void Active(int newActive)
+	{
+		--newActive;
+		if (oneChoice)
+		{
+			elements[active]->Inactive();
+		}
+		elements[newActive]->Active();
+	}
+	void Inactive(int newInactive)
+	{
+		--newInactive;
+		if (!oneChoice)
+		{
+			elements[newInactive]->Inactive();
+		}
+	}
 	void Horizontal()
 	{
 		horizontal = true;

@@ -25,6 +25,7 @@ public:
 		elements.push_back(newElement);
 		elementSize.push_back({static_cast<float>(size.x), 70.0f});
 		hidden.push_back(false);
+		elementAlign.push_back(Align::Center);
 		count++;
 		Resize();
 		SetPosition(position);
@@ -33,29 +34,69 @@ public:
 	{
 		position = newPosition;
 		int i = 0;
-		float toCentre = 0.0f;
+		float toTop = 0.0f, toCentre = 0.0f, toBottom = 0.0f;
 		for (auto element : elements)
 		{
 			if (!hidden[i])
 			{
-				toCentre += elementSize[i].y + space;
+				switch (elementAlign[i])
+				{
+				case Align::Top:
+					toTop += elementSize[i].y + space;
+					break;
+				case Align::Center:
+					toCentre += elementSize[i].y + space;
+					break;
+				case Align::Bottom:
+					toBottom += elementSize[i].y + space;
+					break;
+				}
 			}
 			++i;
 		}
-		toCentre = (static_cast<float>(size.y) - toCentre) / 2.0f;
+		toBottom = (static_cast<float>(size.y) - toBottom);
+		if ((static_cast<float>(size.y) - toCentre) / 2.0f + toCentre > toBottom)
+		{
+			if (toBottom - toCentre < toTop)
+			{
+				toCentre = (static_cast<float>(size.y) - toCentre) / 2.0f;
+			}
+			else
+			{
+				toCentre = toBottom - toCentre;
+			}
+		}
+		else
+		{
+			toCentre = (static_cast<float>(size.y) - toCentre) / 2.0f;
+			toCentre = std::max(toCentre, toTop);
+		}
 		float sizeToSkip;
+		Align align;
 		i = 0;
 		for (auto element : elements)
 		{
+			align = elementAlign[i];
 			sizeToSkip = 0;
 			for (int k = 0; k < i; ++k)
 			{
-				if (!hidden[k])
+				if (!hidden[k] && elementAlign[k] == align)
 				{
 					sizeToSkip += elementSize[k].y + space;
 				}
 			}
-			element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toCentre});
+			switch (align)
+			{
+			case Align::Top:
+				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toTop });
+				break;
+			case Align::Center:
+				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toCentre });
+				break;
+			case Align::Bottom:
+				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toBottom });
+				break;
+			}
 			++i;
 		}
 	}
@@ -73,7 +114,7 @@ public:
 		int i = 0;
 		for (auto element : elements)
 		{
-			elementSize[i].x = size.x;
+			elementSize[i].x = static_cast<float>(size.x);
 			element->SetSize({ elementSize[i].x, elementSize[i].y });
 			++i;
 		}
@@ -135,7 +176,18 @@ public:
 		elements[element]->Enable();
 		SetPosition(position);
 	}
+	void SetBottom(int element)
+	{
+		--element;
+		elementAlign[element] = Align::Bottom;
+	}
 private:
+	enum Align
+	{
+		Top,
+		Center,
+		Bottom
+	};
 	float count = 0;
 	float padding = 0;
 	float space = 0;
@@ -143,4 +195,5 @@ private:
 	std::vector<bool> hidden;
 	std::vector<sf::Vector2f> elementSize;
 	std::vector<Layout*> elements;
+	std::vector<Align> elementAlign;
 };

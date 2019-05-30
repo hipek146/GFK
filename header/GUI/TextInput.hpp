@@ -91,9 +91,9 @@ private:
 	void SetTextSize()
 	{
 		unsigned int characterSize = static_cast<unsigned int>(rect.height * 0.6f);
-		if (characterSize > 80)
+		if (characterSize > 60)
 		{
-			characterSize = 80;
+			characterSize = 60;
 		}
 		text.setCharacterSize(characterSize);
 		sf::FloatRect textSize = text.getLocalBounds();
