@@ -127,7 +127,21 @@ void Triangulation::findEarsPoints()
 		}
 
 		if (canAddEar) {
-			m_earPoints.push_back(m_inputedPoints[currentIndex]);
+
+			m_triangles.push_back(Triangle(m_inputedPoints[previousIndex], m_inputedPoints[currentIndex], m_inputedPoints[nextIndex]));
+			m_convexHullPoints.erase(m_convexHullPoints.begin() + i);
+
+
+
+			for (int i = currentConvexIndex; i < m_preparedPoints.size(); i++)
+			{
+				while (orientation(m_convexHullPoints[m_convexHullPoints.size() - 2], m_convexHullPoints.back(), m_preparedPoints[i]) == 2)
+				{
+					m_reflexVertices.push_back(m_convexHullPoints.back());
+					m_convexHullPoints.pop_back();
+				}
+				m_convexHullPoints.push_back(m_preparedPoints[i]);
+			}
 		}
 	}
 }
