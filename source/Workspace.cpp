@@ -13,7 +13,8 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	sf::Color color;
 	//sf::Triangles
 	//triangulation->m_triangles.size()
-		for (int i = 0; i < 2; i++) {
+
+		for (int i = 0; i < 3; i++) {
 			if (i % 2 == 0) {
 				color = sf::Color::Green;
 			}
