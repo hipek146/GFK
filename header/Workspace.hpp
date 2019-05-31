@@ -22,6 +22,8 @@ class Workspace : public sf::Drawable {
 		void FillSpaceBetweenPoints(sf::RenderTarget& target, sf::RenderStates states) const;	// todo
 		void RepleacePoint(int x, int y);
 		void PushBesierPoints();
+		void DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const;
+		//bool CheckAllBezierColisions()const;
 		sf::Vector2f & getLastPoint();
 		Bezier *bezier;
 

@@ -84,11 +84,14 @@ void Creator::MouseClick() {
 			break;
 		case QUAD_BEZIER:
 			if (!workspace->bezier->isControlPoint) {
-				workspace->bezier->setEndPoint(1.0 * x,  1.0 * y);
-				workspace->bezier->setStartPoint(workspace->getLastPoint());
-				workspace->bezier->isControlPoint = true;
+
+				if (!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y))) {
+					workspace->bezier->setStartPoint(workspace->getLastPoint());
+					workspace->bezier->setEndPoint(1.0 * x, 1.0 * y);
+					workspace->bezier->isControlPoint = true;
+				}
 			}
-			else {
+			else if(!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y))) {
 				//workspace->RepleacePoint(workspace->bezier->endPoint.x, workspace->bezier->endPoint.y);
 				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
 				workspace->PushBesierPoints();

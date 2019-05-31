@@ -7,7 +7,7 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 	//if
 	if (bezier->isControlPoint) {
 		bezier->CalcQuadBezier();
-		bezier->DrawCurrentCurve(target, states);
+		DrawCurrentCurve(target, states);
 	}
 	else
 		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
@@ -90,6 +90,11 @@ bool Workspace::CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const {	// spr
 	return false;
 }
 
+//bool Workspace::CheckAllBezierColisions(sf::)const{
+//
+//
+//}
+
 
 inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const {	
 	
@@ -112,9 +117,19 @@ inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vecto
 	float numerator1 = ((y1 - y3) * (x4 - x3)) - ((x1 - x3) * (y4 - y3));
 	float numerator2 = ((y1 - y3) * (x2 - x1)) - ((x1 - x3) * (y2 - y1));
 
-	if (denominator == 0) return (numerator1 == 0 && numerator2 == 0);	// sprawdza czy mianownik jest 0
+	if (denominator == 0) {
+		//std::cout << "Denominator equals 0" << std::endl;
+		return false;
+	}
+
+	//if (denominator == 0) return (numerator1 == 0 && numerator2 == 0);	// sprawdza czy mianownik jest 0
+
 	float r = numerator1 / denominator;
 	float s = numerator2 / denominator;
+	if ((r >= 0 && r < 1) && (s >= 0 && s <= 1)) {
+		std::cout << "Colision detected between points : " << x1 << " " << y1 << " " << x2 << " " << y2 << " "
+			<< x3 << " " << y3 << " " << x4 << " " << y4 << std::endl;
+	}
 	return (r >= 0 && r < 1) && (s >= 0 && s <= 1);
 }
 
@@ -149,5 +164,22 @@ void Workspace::RepleacePoint(int x, int y) {
 void Workspace::PushBesierPoints() {
 	for (std::vector<sf::Vector2f>::const_iterator a = bezier->points.begin(); a != bezier->points.end(); ++a) {
 		mainPoints.push_back(*a);
+	}
+}
+
+
+void Workspace::DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const {
+
+		sf::Color lineColor;
+
+		if (CheckAllColisions(mainPoints.back(), mousePosition)) {
+			lineColor = sf::Color::Red;
+		}
+		else {
+			lineColor = sf::Color::Green;
+		}
+	for (int i = 0; i < bezier->points.size() - 1; i++) {
+		sfLine currentLine(bezier->points[i], bezier->points[i + 1], lineColor, 3.0);
+		currentLine.draw(target, states);
 	}
 }
