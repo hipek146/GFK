@@ -12,7 +12,7 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 	else
 		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
 //	DrawDotsGroup(target, states);				// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
-	DrawWorkspaceBorder(target, states);
+
 }
 
 Workspace::Workspace(sf::Vector2u *newSize, sf::Vector2f *newPosition) : size(newSize), position(newPosition) {
@@ -46,27 +46,12 @@ void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states
 	}
 }
 
-void Workspace::DrawWorkspaceBorder(sf::RenderTarget& target, sf::RenderStates states) const {	// nie skaluje sie, trzeba to ogarnac
-
-	int spaceInPixels = 0;	// grubosc obramowki workspace
-
-	sfLine currentLine1(sf::Vector2f(spaceInPixels, spaceInPixels), sf::Vector2f(spaceInPixels, originalSize.y - spaceInPixels), sf::Color::Black, 3.0);
-	currentLine1.draw(target, states);
-
-	sfLine currentLine2(sf::Vector2f(spaceInPixels, originalSize.y - spaceInPixels), sf::Vector2f(originalSize.x - spaceInPixels, originalSize.y - spaceInPixels), sf::Color::Black, 3.0);
-	currentLine2.draw(target, states);
-
-	sfLine currentLine3(sf::Vector2f(originalSize.x - spaceInPixels, originalSize.y - spaceInPixels), sf::Vector2f(originalSize.x - spaceInPixels, spaceInPixels), sf::Color::Black, 3.0);
-	currentLine3.draw(target, states);
-
-	sfLine currentLine4(sf::Vector2f(originalSize.x - spaceInPixels, spaceInPixels), sf::Vector2f(spaceInPixels, spaceInPixels), sf::Color::Black, 3.0);
-	currentLine4.draw(target, states);
-}
 
 void Workspace::FillSpaceBetweenPoints(sf::RenderTarget& target, sf::RenderStates states) const {	// todo
 
 	
 }
+
 void Workspace::DrawCurrentLine(sf::RenderTarget& target, sf::RenderStates states) const {	// rysuje utworzone linie
 
 	sf::Color lineColor;
@@ -90,11 +75,35 @@ bool Workspace::CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const {	// spr
 	return false;
 }
 
-//bool Workspace::CheckAllBezierColisions(sf::)const{
-//
-//
-//}
+void Workspace::DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const {
 
+	sf::Color lineColor;
+
+	if (CheckBezierColisions()) {
+		lineColor = sf::Color::Red;
+	}
+	else {
+		lineColor = sf::Color::Green;
+	}
+	for (int i = 0; i < bezier->points.size() - 1; i++) {
+		sfLine currentLine(bezier->points[i], bezier->points[i + 1], lineColor, 3.0);
+		currentLine.draw(target, states);
+	}
+}
+
+bool Workspace::CheckBezierColisions()const{
+	
+	for (int i = 1; i < bezier->points.size() - 2; i++) {
+		for (int j = mainPoints.size() - 1; j >  0; j--) {
+			if (CheckColision(mainPoints[j], mainPoints[j - 1], bezier->points[i], bezier->points[i+1])) {
+				std::cout << "Bezier colision detected at " << mainPoints[j].x << " " << mainPoints[j].y << " " << 
+					mainPoints[j - 1].x << " " << mainPoints[j - 1].y << std::endl;
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const {	
 	
@@ -127,8 +136,8 @@ inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vecto
 	float r = numerator1 / denominator;
 	float s = numerator2 / denominator;
 	if ((r >= 0 && r < 1) && (s >= 0 && s <= 1)) {
-		std::cout << "Colision detected between points : " << x1 << " " << y1 << " " << x2 << " " << y2 << " "
-			<< x3 << " " << y3 << " " << x4 << " " << y4 << std::endl;
+		/*std::cout << "Colision detected between points : " << x1 << " " << y1 << " " << x2 << " " << y2 << " "
+			<< x3 << " " << y3 << " " << x4 << " " << y4 << std::endl;*/
 	}
 	return (r >= 0 && r < 1) && (s >= 0 && s <= 1);
 }
@@ -151,14 +160,8 @@ void Workspace::DrawDotsGroup(sf::RenderTarget& target, sf::RenderStates states)
 	// moze sie przydac 
 }
 
-
 sf::Vector2f & Workspace::getLastPoint() {
 	return mainPoints.back();
-}
-
-void Workspace::RepleacePoint(int x, int y) {
-	mainPoints.pop_back();
-	mainPoints.push_back(sf::Vector2f(1.0*x, 1.0*y));
 }
 
 void Workspace::PushBesierPoints() {
@@ -168,18 +171,3 @@ void Workspace::PushBesierPoints() {
 }
 
 
-void Workspace::DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const {
-
-		sf::Color lineColor;
-
-		if (CheckAllColisions(mainPoints.back(), mousePosition)) {
-			lineColor = sf::Color::Red;
-		}
-		else {
-			lineColor = sf::Color::Green;
-		}
-	for (int i = 0; i < bezier->points.size() - 1; i++) {
-		sfLine currentLine(bezier->points[i], bezier->points[i + 1], lineColor, 3.0);
-		currentLine.draw(target, states);
-	}
-}

@@ -12,7 +12,7 @@ class Bezier{
 		void CalcQuadBezier() {
 
 			points.clear();
-			int numSegments = 1000;
+			int numSegments = 50;
 
 			points.push_back(startPoint);
 

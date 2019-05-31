@@ -65,7 +65,7 @@ void Creator::MouseMove() {
 
 	int x = app->event->mouse.x;		
 	int y = app->event->mouse.y;
-
+	std::cout << x << " " << y << std::endl;
 	if (workspace->isMouseInWorkspaceArea(x, y)) {
 		workspace->UpdateMousePosition(x, y);
 	}
@@ -91,8 +91,7 @@ void Creator::MouseClick() {
 					workspace->bezier->isControlPoint = true;
 				}
 			}
-			else if(!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y))) {
-				//workspace->RepleacePoint(workspace->bezier->endPoint.x, workspace->bezier->endPoint.y);
+			else if(!workspace->CheckBezierColisions()) {
 				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
 				workspace->PushBesierPoints();
 				workspace->bezier->isControlPoint = false;

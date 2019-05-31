@@ -18,12 +18,10 @@ class Workspace : public sf::Drawable {
 		void UpdateMousePosition(int x, int y);	// podobno nie trzeba tego
 		inline bool CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const;	// sprawdza kolizje dwoch lini
 		bool CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const;	// sprawdza wszystkie kolizje aktualnej lini
-		void DrawWorkspaceBorder(sf::RenderTarget& target, sf::RenderStates states) const;	// rysuje obramowke workspace, nie skaluje sie
 		void FillSpaceBetweenPoints(sf::RenderTarget& target, sf::RenderStates states) const;	// todo
-		void RepleacePoint(int x, int y);
 		void PushBesierPoints();
 		void DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const;
-		//bool CheckAllBezierColisions()const;
+		bool CheckBezierColisions()const;
 		sf::Vector2f & getLastPoint();
 		Bezier *bezier;
 
