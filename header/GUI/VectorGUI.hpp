@@ -122,15 +122,16 @@ public:
 	}
 	virtual void Callback(GUI* elementCallback)
 	{
-		if (!oneChoice)
-		{
-			return;
-		}
 		int i = 0;
 		for (auto element : elements)
 		{
 			if (element == elementCallback)
 			{
+				lastPressed = i;
+				if (!oneChoice)
+				{
+					return;
+				}
 				if (active != i && active >= 0)
 				{
 					elements[active]->Inactive();
@@ -171,6 +172,8 @@ public:
 		Resize();
 		SetPosition(position);
 	}
+
+	int lastPressed = -1;
 private:
 	int active = -1;
 	float count = 0;

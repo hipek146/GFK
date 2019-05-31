@@ -38,6 +38,8 @@ public:
 		app->event->Enable(element);
 	}
 
+	virtual void Blank() {}
+
 	sf::Vector2u *size;
 	App *app;
 };

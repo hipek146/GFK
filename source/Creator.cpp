@@ -189,8 +189,12 @@ void Creator::CreateInterface()
 
 	/////////////////////////Opcje/////////////////////////////////
 	layoutOptions = new MenuLayout(layoutSize);
-	layoutOptions->ADD_BLANK(new Button(L"Zapisz"));
-	layoutOptions->ADD_BLANK(new Button(L"Wczytaj"));
+	Button *saveButton = new Button(L"Zapisz");
+	layoutOptions->Add(saveButton, this, &Creator::Blank);
+	app->event->Add(&saveButton->rect, app, saveButton, &App::SaveDialog, EventType::Pressed);
+	Button *loadButton = new Button(L"Wczytaj");
+	layoutOptions->Add(loadButton, this, &Creator::Blank);
+	app->event->Add(&loadButton->rect, app, loadButton, &App::LoadDialog, EventType::Pressed);
 	layoutOptions->ADD(new Button(L"Wstecz"), &Creator::GoToMenu);
 	layoutOptions->ADD(new Button(L"Wyjscie"), &Creator::Exit);
 

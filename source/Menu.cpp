@@ -13,6 +13,9 @@ void Menu::Pressed(MenuPressed pressed)
 {
 	switch (pressed)
 	{
+	case MenuPressed::Load:
+		app->LoadDialog();
+		break;
 	case MenuPressed::Creator:
 		app->LoadScreen(app->creator);
 		break;
@@ -164,8 +167,8 @@ void Menu::CreateScreen()
 	ResizeScreen();
 	
 	layout = new MenuLayout(*size);
-	layout->Add(new Button(L"Gra"));
 	layout->ADD(new Button(L"Kreator"), &Menu::PressedCreator);
+	layout->ADD(new Button(L"Wczytaj teren"), &Menu::PressedLoad);
 	layout->ADD(new Button(L"Opcje"), &Menu::PressedOptions);
 	layout->ADD(new Button(L"Wyjscie"), &Menu::PressedExit);
 

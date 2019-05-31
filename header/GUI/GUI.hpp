@@ -58,6 +58,8 @@ public:
 			parent->EnableEvent(this);
 		}
 	}
+	friend class App;
+	friend class Creator;
 	friend class MenuLayout;
 	friend class CreatorLayout;
 	friend class CreatorTabs;

@@ -124,7 +124,6 @@ public:
 			element->Enable();
 		}
 	}
-
 private:
 	std::vector<GUI*> elements;
 	float length = 0;

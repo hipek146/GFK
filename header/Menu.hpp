@@ -5,7 +5,7 @@
 
 enum class MenuPressed
 {
-	Game,
+	Load,
 	Creator,
 	Options,
 	Exit
@@ -22,6 +22,7 @@ public:
 	virtual void ResizeScreen() override;
 private:
 	void Pressed(MenuPressed pressed);
+	void PressedLoad() { Pressed(MenuPressed::Load); }
 	void PressedCreator() { Pressed(MenuPressed::Creator); }
 	void PressedOptions() { Pressed(MenuPressed::Options); }
 	void PressedExit() { Pressed(MenuPressed::Exit); }

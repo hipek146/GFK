@@ -55,7 +55,6 @@ public:
 	}
 	void TextUpdate(sf::Uint32 param)
 	{
-		std::cout << param << std::endl;
 		if (param == 8)
 		{
 			if (string.getSize() > 0)

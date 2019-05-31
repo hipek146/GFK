@@ -4,6 +4,9 @@
 #include "SFML/Graphics.hpp"
 
 class Screen;
+class DialogBox;
+class VectorGUI;
+class TextInput;
 
 class App : public sf::Drawable
 {
@@ -18,14 +21,31 @@ public:
 	friend class Menu;
 	friend class Creator;
 
+	void LoadDialog();
+	void CloseLoadDialog();
+	void Load();
+	void SaveDialog();
+	void CloseSaveDialog();
+	void Save();
+
 	sf::Vector2u *size;
 	Event *event;
 
 private:
+	void Blank() {}
+
 	Screen *menu;
 	Screen *creator;
 	
 	Screen *screen;
 
 	Config *config;
+
+	VectorGUI *layoutSave;
+	TextInput *textInputSave;
+	DialogBox *loadDialog;
+	DialogBox *saveDialog;
+	sf::Vector2u defaultSizeDialog{ 500, 600 };
+	sf::Vector2u sizeDialog{ defaultSizeDialog };
+	std::vector<std::wstring> filenames;
 };
