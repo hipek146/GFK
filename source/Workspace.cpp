@@ -13,19 +13,38 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	sf::Color color;
 	//sf::Triangles
 	//triangulation->m_triangles.size()
-
-		for (int i = 0; i < 3; i++) {
-			if (i % 2 == 0) {
-				color = sf::Color::Green;
-			}
-			else {
+	int colorNumber = 0;
+		for (int i = 0; i < triangulation->m_triangles.size(); i++) {
+			switch(colorNumber) {
+			case 0:
+				color = sf::Color::Blue;
+				break;
+			case 1:
 				color = sf::Color::Red;
+				break;
+			case 2:
+				color = sf::Color::Green;
+				break;
+			case 3:
+				color = sf::Color::Magenta;
+				break;
+			case 4:
+				color = sf::Color::Cyan;
+				break;
+			case 5:
+				color = sf::Color::Yellow;
+				break;
 			}
+
 			vertices[0] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[0].x, triangulation->m_triangles[i].points[0].y), color);
 			vertices[1] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[1].x, triangulation->m_triangles[i].points[1].y), color);
 			vertices[2] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[2].x, triangulation->m_triangles[i].points[2].y), color);
 
 			target.draw(vertices, 3, sf::Triangles);
+
+			if (colorNumber++ == 5) {
+				colorNumber = 0;
+			}
 		} 
 
 	DrawLinesGroup(target, states);
@@ -69,6 +88,7 @@ Workspace::Workspace()
 	mainPoints.push_back(sf::Vector2f(240, 510));	// 4
 	mainPoints.push_back(sf::Vector2f(60, 270));	// 5
 	mainPoints.push_back(sf::Vector2f(90, 720)); // 6
+	mainPoints.push_back(sf::Vector2f(150, 833)); // 6
 
 
 	triangulation = new Triangulation(mainPoints);

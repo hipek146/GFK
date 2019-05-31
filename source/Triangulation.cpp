@@ -105,7 +105,7 @@ void Triangulation::findEarsPoints()
 	int currentConvexIndex = 0;
 	int originalInputSize = m_inputedPoints.size();
 
-	for (int i = 0; i < originalInputSize - 4; i++)
+	for (int i = 0; i < originalInputSize - 3; i++)
 	{
 		currentIndex = findPoint(m_convexHullPoints[currentConvexIndex], m_inputedPoints);
 
@@ -167,12 +167,14 @@ void Triangulation::findEarsPoints()
 	
 				}
 				m_convexHullPoints.insert(m_convexHullPoints.begin() + currentConvexIndex, m_sortedPoints[i]);
+////////////////////////////////////
 
+				int reflexIndexToDelete = findPoint(m_convexHullPoints[currentConvexIndex], m_reflexVertices);
+				if (reflexIndexToDelete != -1) {
+					m_reflexVertices.erase(m_reflexVertices.begin() + reflexIndexToDelete);
+				}
 
-			//	int reflexIndexToDelete = findPoint(m_convexHullPoints[1], m_convexHullPoints);
-			//	if (reflexIndexToDelete != -1) {
-			//		m_reflexVertices.erase(m_reflexVertices.begin() + reflexIndexToDelete);
-			//	}
+///////////////////////////////////
 			}
 		
 			printPoints(m_reflexVertices, "reflex: ");
@@ -185,7 +187,7 @@ void Triangulation::findEarsPoints()
 		}
 		
 	}
-	/*
+	
 	sf::Vector2f lastTriangle[3];
 	int i = 0;
 	while (!m_reflexVertices.empty()) {
@@ -198,8 +200,8 @@ void Triangulation::findEarsPoints()
 		m_convexHullPoints.pop_back();
 		i++;
 	}
-	*/
-	//m_triangles.push_back(Triangle(lastTriangle[0], lastTriangle[1], lastTriangle[2]));
+	
+	m_triangles.push_back(Triangle(lastTriangle[0], lastTriangle[1], lastTriangle[2]));
 	for (int i = 0; i < m_triangles.size(); ++i) {
 		std::cout << "Trojkaty: [" << m_triangles[i].points[0].x << ", " << m_triangles[i].points[0].y << "] " <<
 			"[" << m_triangles[i].points[1].x << ", " << m_triangles[i].points[1].y << "] "	
