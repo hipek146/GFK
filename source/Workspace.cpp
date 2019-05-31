@@ -8,12 +8,58 @@
 
 void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-		DrawLinesGroup(target, states);
-		DrawCurrentLine(target, states);
+
+	sf::Vertex vertices[3];
+	sf::Color color;
+	//sf::Triangles
+	//triangulation->m_triangles.size()
+		for (int i = 0; i < 2; i++) {
+			if (i % 2 == 0) {
+				color = sf::Color::Green;
+			}
+			else {
+				color = sf::Color::Red;
+			}
+			vertices[0] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[0].x, triangulation->m_triangles[i].points[0].y), color);
+			vertices[1] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[1].x, triangulation->m_triangles[i].points[1].y), color);
+			vertices[2] = sf::Vertex(sf::Vector2f(triangulation->m_triangles[i].points[2].x, triangulation->m_triangles[i].points[2].y), color);
+
+			target.draw(vertices, 3, sf::Triangles);
+		} 
+
+	DrawLinesGroup(target, states);
+	//DrawCurrentLine(target, states);
+}
+
+void PerlinNoise1D(int nCount, float *fSeed, int nOctaves, float fBias, float *fOutput)
+{
+	// Used 1D Perlin Noise
+	for (int x = 0; x < nCount; x++)
+	{
+		float fNoise = 0.0f;
+		float fScaleAcc = 0.0f;
+		float fScale = 1.0f;
+
+		for (int o = 0; o < nOctaves; o++)
+		{
+			int nPitch = nCount >> o;
+			int nSample1 = (x / nPitch) * nPitch;
+			int nSample2 = (nSample1 + nPitch) % nCount;
+			float fBlend = (float)(x - nSample1) / (float)nPitch;
+			float fSample = (1.0f - fBlend) * fSeed[nSample1] + fBlend * fSeed[nSample2];
+			fScaleAcc += fScale;
+			fNoise += fSample * fScale;
+			fScale = fScale / fBias;
+		}
+
+		// Scale to seed range
+		fOutput[x] = fNoise / fScaleAcc;
+	}
 }
 
 Workspace::Workspace() 
 {
+
 	// punkty testowe
 	mainPoints.push_back(sf::Vector2f(450, 480));	// 0
 	mainPoints.push_back(sf::Vector2f(600, 810));	// 1
@@ -21,9 +67,11 @@ Workspace::Workspace()
 	mainPoints.push_back(sf::Vector2f(690, 90));	// 3
 	mainPoints.push_back(sf::Vector2f(240, 510));	// 4
 	mainPoints.push_back(sf::Vector2f(60, 270));	// 5
-	mainPoints.push_back(sf::Vector2f(90, 720));	// 6
+	mainPoints.push_back(sf::Vector2f(90, 720)); // 6
+
 
 	triangulation = new Triangulation(mainPoints);
+
 	//triangulation->printPoints(triangulation->inputedPoints, "punkty: ");
 
 }

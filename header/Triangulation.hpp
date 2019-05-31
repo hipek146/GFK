@@ -35,6 +35,7 @@ float triangleArea(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3);
 ////////////////////////////////////////////////
 class Triangulation
 {
+	friend class Workspace;
 
 	public:
 
@@ -54,7 +55,7 @@ class Triangulation
 		std::vector <sf::Vector2f> m_inputedPoints;
 		std::vector <sf::Vector2f> m_sortedPoints;
 		std::vector <sf::Vector2f> m_preparedPoints;
-		std::vector <Triangle> m_triangles;
+		std::vector <Triangle>		m_triangles;
 		std::vector <sf::Vector2f> m_convexHullPoints;
 		std::vector <sf::Vector2f> m_reflexVertices;
 		std::vector <sf::Vector2f> m_earPoints;

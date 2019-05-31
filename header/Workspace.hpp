@@ -26,4 +26,5 @@ class Workspace : public sf::Drawable {
 		sf::Vector2u *size;		// size workspace
 		sf::Vector2u originalSize;	// poczatkowy rozmiar okna (po wejsciu do workspace)
 		Triangulation *triangulation;
+		sf::Texture *texture;
 };
