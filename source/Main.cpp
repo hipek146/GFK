@@ -25,7 +25,7 @@ int main()
 	window.setFramerateLimit(60);
 
 	Event event(window);
-	App app(&event);
+	App app(&event, &config);
 
 
 	while (window.isOpen())

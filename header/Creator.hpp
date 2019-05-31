@@ -67,24 +67,8 @@ private:
 
 	CreatorLayout *creatorLayout;
 
-
-	CreatorTabs *creatorTabs;
-	TabsLayout *tabsLayout;
-
-	ContainerGUI *containerEdit;
-	VectorGUI *vectorEditMode;
-	VectorGUI *vectorEditScroll;
-	VectorGUI *vectorEditPoints;
-
-	ContainerGUI *containerDraw;
-	VectorGUI *vectorDrawMode;
-	VectorGUI *vectorDrawPoints;
-	VectorGUI *vectorDrawGenerator;
-
 	ContainerGUI *containerWater;
-	VectorGUI *vectorWaterBoxes;
-	VectorGUI *vectorWaterScroll;
+	VectorGUI *vectorDrawPoints;
+	VectorGUI *vectorEditPoints;
 	VectorGUI *vectorWaterPoints;
-
-	MenuLayout *layoutOptions;
 };

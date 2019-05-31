@@ -81,6 +81,8 @@ protected:
 
 #include "TextInput.hpp"
 
+#include "TextBox.hpp"
+
 #include "ScrollBar.hpp"
 
 #include "CircleButton.hpp"
@@ -96,5 +98,7 @@ protected:
 #include "VectorGUI.hpp"
 
 #include "ContainerGUI.hpp"
+
+#include "DialogBox.hpp"
 
 #include "Touchpad.hpp"

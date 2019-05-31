@@ -15,6 +15,10 @@ public:
 		{
 			delete button;
 		}
+		for (auto layout : layouts)
+		{
+			delete layout;
+		}
 	}
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
 	{

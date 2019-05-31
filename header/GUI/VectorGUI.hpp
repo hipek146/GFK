@@ -10,7 +10,6 @@ public:
 		for (auto &element : elements)
 		{
 			delete element;
-			element = nullptr;
 		}
 	}
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override
@@ -145,10 +144,11 @@ public:
 	void Active(int newActive)
 	{
 		--newActive;
-		if (oneChoice)
+		if (oneChoice && active >= 0)
 		{
 			elements[active]->Inactive();
 		}
+		active = newActive;
 		elements[newActive]->Active();
 	}
 	void Inactive(int newInactive)
@@ -171,7 +171,6 @@ public:
 		Resize();
 		SetPosition(position);
 	}
-
 private:
 	int active = -1;
 	float count = 0;

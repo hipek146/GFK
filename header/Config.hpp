@@ -14,7 +14,10 @@ public:
 	Config(const Config &copy) = default;
 	Config(sf::String source);
 	AnyValue& operator () (sf::String parameterName);
+	void operator () (sf::String parameterName, AnyValue value);
+	bool Save();
 private:
 	Dictionary data;
-	int a;
+	sf::String source;
+	//int a;
 };

@@ -2,7 +2,7 @@
 #include "Menu.hpp"
 #include "Creator.hpp"
 
-App::App(Event *event) : event(event)
+App::App(Event *event, Config *config) : event(event), config(config)
 {
 	size = &event->size;
 
@@ -15,6 +15,10 @@ App::App(Event *event) : event(event)
 
 App::~App()
 {
+	if (screen != nullptr)
+	{
+		screen->ClearScreen();
+	}
 	delete menu;
 	delete creator;
 }

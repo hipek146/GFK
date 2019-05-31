@@ -4,7 +4,15 @@
 class ContainerGUI : public Layout
 {
 public:
-	ContainerGUI(sf::Vector2u &newSize, sf::Vector2f newPosition = {}) : Layout(newSize, newPosition) {}
+	ContainerGUI(sf::Vector2u newSize, sf::Vector2f newPosition = {}) : Layout(newSize, newPosition) {}
+
+	virtual ~ContainerGUI()
+	{
+		for (auto &element : elements)
+		{
+			delete element;
+		}
+	}
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override
 	{
@@ -23,9 +31,10 @@ public:
 	void Add(T *screen, Layout *newElement)
 	{
 		elements.push_back(newElement);
-		elementSize.push_back({static_cast<float>(size.x), 70.0f});
+		elementSize.push_back({0.0f, 70.0f});
 		hidden.push_back(false);
 		elementAlign.push_back(Align::Center);
+		percent.push_back({ 100.0f, 100.0f });
 		count++;
 		Resize();
 		SetPosition(position);
@@ -54,23 +63,9 @@ public:
 			}
 			++i;
 		}
+		toCentre = (static_cast<float>(size.y) - toBottom - toTop - toCentre) / 2.0f + toTop;
 		toBottom = (static_cast<float>(size.y) - toBottom);
-		if ((static_cast<float>(size.y) - toCentre) / 2.0f + toCentre > toBottom)
-		{
-			if (toBottom - toCentre < toTop)
-			{
-				toCentre = (static_cast<float>(size.y) - toCentre) / 2.0f;
-			}
-			else
-			{
-				toCentre = toBottom - toCentre;
-			}
-		}
-		else
-		{
-			toCentre = (static_cast<float>(size.y) - toCentre) / 2.0f;
-			toCentre = std::max(toCentre, toTop);
-		}
+
 		float sizeToSkip;
 		Align align;
 		i = 0;
@@ -88,13 +83,13 @@ public:
 			switch (align)
 			{
 			case Align::Top:
-				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toTop });
+				element->SetPosition({ newPosition.x + (size.x - element->size.x) / 2.0f, newPosition.y + padding + sizeToSkip});
 				break;
 			case Align::Center:
-				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toCentre });
+				element->SetPosition({ newPosition.x + (size.x- element->size.x) / 2.0f, newPosition.y + padding + sizeToSkip + toCentre });
 				break;
 			case Align::Bottom:
-				element->SetPosition({ newPosition.x + padding, newPosition.y + padding + sizeToSkip + toBottom });
+				element->SetPosition({ newPosition.x + (size.x - element->size.x) / 2.0f, newPosition.y + padding + sizeToSkip + toBottom });
 				break;
 			}
 			++i;
@@ -114,8 +109,14 @@ public:
 		int i = 0;
 		for (auto element : elements)
 		{
-			elementSize[i].x = static_cast<float>(size.x);
-			element->SetSize({ elementSize[i].x, elementSize[i].y });
+			if (elementSize[i].x > 0)
+			{
+				element->SetSize({ elementSize[i].x - 2 * padding, elementSize[i].y - 2 * padding});
+			}
+			else
+			{
+				element->SetSize({ (static_cast<float>(size.x) - 2 * padding) * percent[i].x / 100.0f, elementSize[i].y - 2 * padding});
+			}
 			++i;
 		}
 	}
@@ -162,6 +163,23 @@ public:
 		Resize();
 		SetPosition(position);
 	}
+	void SetElementSizeX(int elementSet, float newSizeY)
+	{
+		--elementSet;
+		if (elementSet >= 0)
+		{
+			elementSize[elementSet].x = newSizeY;
+		}
+		Resize();
+		SetPosition(position);
+	}
+	void SetPercentX(int index, float newPercentX)
+	{
+		--index;
+		percent[index].x = newPercentX;
+		Resize();
+		SetPosition(position);
+	}
 	void Hide(int element)
 	{
 		--element;
@@ -176,12 +194,20 @@ public:
 		elements[element]->Enable();
 		SetPosition(position);
 	}
+	void SetTop(int element)
+	{
+		--element;
+		elementAlign[element] = Align::Top;
+		SetPosition(position);
+	}
 	void SetBottom(int element)
 	{
 		--element;
 		elementAlign[element] = Align::Bottom;
+		SetPosition(position);
 	}
-private:
+
+protected:
 	enum Align
 	{
 		Top,
@@ -194,6 +220,7 @@ private:
 	bool center = true;
 	std::vector<bool> hidden;
 	std::vector<sf::Vector2f> elementSize;
+	std::vector<sf::Vector2f> percent;
 	std::vector<Layout*> elements;
 	std::vector<Align> elementAlign;
 };

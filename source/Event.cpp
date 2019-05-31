@@ -68,12 +68,12 @@ void Event::operator () ()
 	}
 	for (auto &element : handle)
 	{
+		if (element.disable)
+		{
+			continue;
+		}
 		if (element.rect != nullptr && element.rect->contains(mouse.x, mouse.y))
 		{
-			if (element.disable)
-			{
-				continue;
-			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (element.isOk[EventType::Pressed])
@@ -112,19 +112,38 @@ void Event::operator () ()
 		}
 	}
 	int length = handle.size();
+	bool flag = false;
 	for (auto &element : handle)
 	{
-		if (element.mouseOver && element.rect != nullptr && !element.rect->contains(mouse.x, mouse.y))
+		if (element.disable)
+		{
+			length--;
+			if (length == 0)
+			{
+				cursorSet = CursorType::Arrow;
+			}
+			continue;
+		}
+		if (flag == false && element.rect != nullptr && element.rect->contains(mouse.x, mouse.y))
+		{
+			flag = true;
+			if (!element.isOk[EventType::MouseOver])
+			{
+				--length;
+				if (length == 0)
+				{
+					cursorSet = CursorType::Arrow;
+				}
+			}
+			continue;
+		}
+		if (element.mouseOver && element.rect != nullptr && (!element.rect->contains(mouse.x, mouse.y) || flag))
 		{
 			if (element.isOk[EventType::MouseOut])
 			{
 				element.callbackHandle[EventType::MouseOut]();
 			}		
 			element.mouseOver = false;
-		}
-		else if (element.mouseOver)
-		{
-			length++;
 		}
 		--length;
 		if (length == 0)

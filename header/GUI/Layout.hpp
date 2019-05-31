@@ -32,6 +32,7 @@ public:
 	friend class CreatorLayout;
 	friend class CreatorTabs;
 	friend class TabsLayout;
+	friend class ContainerGUI;
 
 protected:
 	sf::Vector2u size;

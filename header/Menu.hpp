@@ -23,9 +23,33 @@ public:
 private:
 	void Pressed(MenuPressed pressed);
 	void PressedCreator() { Pressed(MenuPressed::Creator); }
+	void PressedOptions() { Pressed(MenuPressed::Options); }
 	void PressedExit() { Pressed(MenuPressed::Exit); }
+
+
+	enum class AntaliasingMode
+	{
+		OFF,
+		x4,
+		x8,
+
+	} antaliasingMode;
+	void OptionsDialog();
+	void CloseOptionsDialog();
+	void OptionsAntyaliasingOFF() { antaliasingMode = AntaliasingMode::OFF; }
+	void OptionsAntyaliasing4x() { antaliasingMode = AntaliasingMode::x4; }
+	void OptionsAntyaliasing8x() { antaliasingMode = AntaliasingMode::x8; }
+	void SaveOptions();
+	void Blank() {}
 
 	sf::Sprite *background;
 	sf::Texture *backgroundTexture;
 	MenuLayout *layout;
+	DialogBox *options;
+	TextInput *textInputWidth;
+	TextInput *textInputHeight;
+	bool needsRecreate = false;
+
+	sf::Vector2u defaultSizeDialog{ 500, 700 };
+	sf::Vector2u sizeDialog{ defaultSizeDialog };
 };

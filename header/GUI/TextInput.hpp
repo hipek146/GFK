@@ -4,15 +4,20 @@
 class TextInput : public GUI
 {
 public:
-	TextInput(sf::String string)
+	TextInput(sf::String newString, bool newText = false)
 	{
 		if (!font.loadFromFile("resource/fonts/SimsLLHP.ttf"))
 		{
 			throw L"Cannot open font file";
 		}
-		text.setString(string);
+		text.setString(newString);
 		text.setFont(font);
 		text.setFillColor(sf::Color::White);
+
+		if (newText)
+		{
+			string = newString;
+		}
 
 		shape.setFillColor(color);
 	}
@@ -86,6 +91,10 @@ public:
 		text.setString(string);
 		SetTextSize();
 		SetPosition({ rect.left + (rect.width) / 2.0f, rect.top + (rect.height) / 2.0f });
+	}
+	sf::String GetString() const
+	{
+		return string;
 	}
 private:
 	void SetTextSize()

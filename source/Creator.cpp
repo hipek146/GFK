@@ -7,7 +7,6 @@ Creator::Creator(App *parent) : Screen(parent) {}
 
 Creator::~Creator()
 {
-	ClearScreen();
 }
 
 void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -83,6 +82,22 @@ void Creator::CheckPoints()
 
 void Creator::CreateInterface()
 {
+	CreatorTabs *creatorTabs;
+	TabsLayout *tabsLayout;
+
+	ContainerGUI *containerEdit;
+	VectorGUI *vectorEditMode;
+	VectorGUI *vectorEditScroll;
+
+	ContainerGUI *containerDraw;
+	VectorGUI *vectorDrawMode;
+	VectorGUI *vectorDrawGenerator;
+
+	VectorGUI *vectorWaterBoxes;
+	VectorGUI *vectorWaterScroll;
+
+	MenuLayout *layoutOptions;
+
 	creatorLayout = new CreatorLayout(this, layoutSize, layoutPosition);
 
 	creatorTabs = new CreatorTabs(layoutSize);
@@ -187,50 +202,5 @@ void Creator::ClearInterface()
 {
 	delete creatorLayout;
 	creatorLayout = nullptr;
-
-	delete creatorTabs;
-	creatorTabs = nullptr;
-
-	delete tabsLayout;
-	tabsLayout = nullptr;
-
-	delete containerDraw;
-	containerDraw = nullptr;
-
-	delete vectorDrawMode;
-	vectorDrawMode = nullptr;
-
-	delete vectorDrawPoints;
-	vectorDrawPoints = nullptr;
-
-	delete vectorDrawGenerator;
-	vectorDrawGenerator = nullptr;
-
-	delete containerEdit;
-	containerEdit = nullptr;
-
-	delete vectorEditMode;
-	vectorEditMode = nullptr;
-
-	delete vectorEditScroll;
-	vectorEditScroll = nullptr;
-
-	delete vectorEditPoints;
-	vectorEditPoints = nullptr;
-
-	delete containerWater;
-	containerWater = nullptr;
-
-	delete vectorWaterBoxes;
-	vectorWaterBoxes = nullptr;
-
-	delete vectorWaterScroll;
-	vectorWaterScroll = nullptr;
-
-	delete vectorWaterPoints;
-	vectorWaterPoints = nullptr;
-
-	delete layoutOptions;
-	layoutOptions = nullptr;
 }
 
