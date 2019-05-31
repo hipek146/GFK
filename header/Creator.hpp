@@ -21,7 +21,8 @@ private:
 	void MouseClick();
 	void Exit();
 	void GoToMenu();
-	void ChangeDrawingType();
+	void ChangeDrawingTypeToBezier();
+	void ChangeDrawingTypeToLines();
 
 	enum drawingOptions {
 		LINE,

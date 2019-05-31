@@ -48,7 +48,6 @@ class Bezier{
 			target.draw(vertices, states);
 		}
 
-
 		sf::Vector2f startPoint;
 		sf::Vector2f endPoint;
 		sf::Vector2f controlPoint;

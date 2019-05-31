@@ -27,9 +27,9 @@ void Creator::CreateScreen() {
 						
 	layout = new MenuLayout(&layoutSize, &layoutPosition);
 //	layout->Add(new Button("Przycisk 1")); // Niedobrze tylko go widać
-	layout->Add(new Button("Button 1"), this); // Dobry przycisk bez podłączonej funkcji
+	layout->Add(new Button("Draw Lines"), this, &Creator::ChangeDrawingTypeToLines); // Dobry przycisk bez podłączonej funkcji
 	//layout->ADD_BLANK(new Button("Button 2")); // To samo co wyżej tylko "this" schowane w makro
-	layout->Add(new Button(L"Bezier "), this, &Creator::ChangeDrawingType); //Przycisk z podłączoną funkcją
+	layout->Add(new Button(L"Draw Curves"), this, &Creator::ChangeDrawingTypeToBezier); //Przycisk z podłączoną funkcją
 	layout->Add(new Button(L"Back to Menu"),this, &Creator::GoToMenu); //Przycisk z podłączoną funkcją
 	layout->ADD(new Button(L"Exit"), &Creator::Exit);  // To samo co wyżej tylko "this" schowane w makro
 }
@@ -113,6 +113,10 @@ void Creator::GoToMenu() {
 	app->LoadScreen(app->menu);
 }
  
-void Creator::ChangeDrawingType() {
+void Creator::ChangeDrawingTypeToBezier() {
 	drawingType = QUAD_BEZIER;
+}
+
+void Creator::ChangeDrawingTypeToLines() {
+	drawingType = LINE;
 }
