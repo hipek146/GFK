@@ -11,8 +11,8 @@ Creator::~Creator()
 
 void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	target.draw(*workspace);
 	target.draw(*creatorLayout);
-	workspace->draw(target, states);
 }
 
 
@@ -46,7 +46,7 @@ void Creator::ResizeScreen()
 	layoutSize = { 400, size->y };
 	layoutPosition = { size->x - 400.0f, 0 };
 	
-	workspaceSize = { size->x - 400, size->y };
+	workspaceSize = { size->x, size->y };
 //	workspacePosition = { ..., ... };		// jak bedziemy chcieli zmienic polozenie, na razie jest [0,0]
 
 	if (creatorLayout != nullptr) {
