@@ -8,11 +8,11 @@ App::App(Event *event, Config *config) : event(event), config(config)
 {
 	size = &event->size;
 
-	event->Add(nullptr, this, nullptr, &App::Resize, EventType::Resize);
+	event->Add(nullptr, this, nullptr, &App::Resize, EventType::Resize); //dodaje zdarzenie rezise dla aplikacji 
 
-	menu = new Menu(this);
-	creator = new Creator(this);
-	LoadScreen(menu);
+	menu = new Menu(this); //tworzy okno menu aplikacji, korzysta z dziedziczenia Screen 
+	creator = new Creator(this);//tworzy okno kreatora aplikacji, korzysta z dziedziczenia Screen 
+	LoadScreen(menu);//laduje okno menu 
 }
 
 App::~App()
@@ -51,7 +51,7 @@ void App::LoadScreen(Screen *screenToLoaded)
 		screen->ClearScreen();
 	}
 	screen = screenToLoaded;
-	screen->CreateScreen();
+	screen->CreateScreen(); //Tutaj zaczyna tworzyc sie ekran 
 }
 
 void App::Resize()

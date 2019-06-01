@@ -22,6 +22,7 @@ int main()
 	settings.antialiasingLevel = config(L"antialiasing");
 
 	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł", sf::Style::Default, settings);
+
 	window.setFramerateLimit(60);
 
 	Event event(window);
@@ -32,12 +33,12 @@ int main()
 	{
 		window.clear(sf::Color::White);
 
-		while (window.pollEvent(event))
+		while (window.pollEvent(event))//wywołany rzutowanie z obiektu Event na sf::Event ?
 		{
-			event();
+			event();// zamiast switcha
 		}
 
-		window.draw(app);
+ 		window.draw(app);
 		window.display();
 	}
 	return 0;

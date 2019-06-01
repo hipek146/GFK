@@ -189,8 +189,10 @@ void Menu::ClearScreen()
 	options = nullptr;
 }
 
+//Dopasowuje tło do okna 
 void Menu::ResizeScreen()
 {
+	
 	float backgroundSizeX = static_cast<float>(backgroundTexture->getSize().x);
 	float backgroundSizeY = static_cast<float>(backgroundTexture->getSize().y);
 	float ratio = (size->x / static_cast<float>(size->y) > backgroundSizeX / backgroundSizeY) ? (size->x / backgroundSizeX) : (size->y / backgroundSizeY);

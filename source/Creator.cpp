@@ -12,11 +12,12 @@ Creator::~Creator()
 void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*creatorLayout);
+	workspace->draw(target, states);
 }
 
 
-void Creator::CreateScreen()
-{
+void Creator::CreateScreen() {
+
 	ResizeScreen();
 
 	touchpad = new Touchpad(this, size);
@@ -24,12 +25,18 @@ void Creator::CreateScreen()
 	touchpad->onClick(this, &Creator::MouseClick);
 	
 	CreateInterface();
+
+	workspace = new Workspace(&workspaceSize, &workspacePosition);
+
 }
 
-void Creator::ClearScreen()
-{
+void Creator::ClearScreen() {
+
 	delete touchpad;
 	touchpad = nullptr;
+
+	delete workspace;
+	workspace = nullptr;
 
 	ClearInterface();
 }
@@ -39,22 +46,16 @@ void Creator::ResizeScreen()
 	layoutSize = { 400, size->y };
 	layoutPosition = { size->x - 400.0f, 0 };
 	
-	if (creatorLayout != nullptr)
-	{
+	workspaceSize = { size->x - 400, size->y };
+//	workspacePosition = { ..., ... };		// jak bedziemy chcieli zmienic polozenie, na razie jest [0,0]
+
+	if (creatorLayout != nullptr) {
 		touchpad->Resize();
 		creatorLayout->SetSize({ static_cast<float>(layoutSize.x), static_cast<float>(layoutSize.y) });
 		creatorLayout->SetPosition(layoutPosition);
 	}
 }
 
-
-void Creator::MouseMove()
-{
-}
-
-void Creator::MouseClick()
-{
-}
 
 void Creator::Generator()
 {
@@ -208,3 +209,45 @@ void Creator::ClearInterface()
 	creatorLayout = nullptr;
 }
 
+void Creator::MouseMove() {
+
+	int x = app->event->mouse.x;		
+	int y = app->event->mouse.y;
+	std::cout << x << " " << y << std::endl;
+	if (workspace->isMouseInWorkspaceArea(x, y)) {
+		workspace->UpdateMousePosition(x, y);
+	}
+}
+
+void Creator::MouseClick() {
+
+	int x = app->event->mouse.x;		// mouse position [x, y]
+	int y = app->event->mouse.y;		// edit: podobno do app mozna sie wszedzie dostac, potem sie refaktoryzacje zrobi
+
+	if (workspace->isMouseInWorkspaceArea(x, y)) {
+		switch (drawMode) {
+		case DrawMode::Section:
+			workspace->AddPoint(x, y);
+
+			break;
+		case DrawMode::Bezier:
+			if (!workspace->bezier->isControlPoint) {
+
+				if (!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y))) {
+					workspace->bezier->setStartPoint(workspace->getLastPoint());
+					workspace->bezier->setEndPoint(1.0 * x, 1.0 * y);
+					workspace->bezier->isControlPoint = true;
+				}
+			}
+			else if(!workspace->CheckBezierColisions()) {
+				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
+				workspace->PushBesierPoints();
+				workspace->bezier->isControlPoint = false;
+			}
+			break;
+		default:
+
+			break;
+		}
+	}
+}
