@@ -1,4 +1,5 @@
 #pragma once
+#include "Data.hpp"
 #include "SFML/Graphics.hpp"
 #include "Bezier.hpp"
 
@@ -6,7 +7,7 @@ class Workspace : public sf::Drawable {
 	
 	public:
 
-		Workspace(sf::Vector2u *newSize, sf::Vector2f *newPosition);
+		Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosition);
 		~Workspace();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;		// wywoluje wszystkie rysujace metody
 		void Resize();	// todo
@@ -23,10 +24,20 @@ class Workspace : public sf::Drawable {
 		void PushBesierPoints();
 		void DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const;
 		bool CheckBezierColisions()const;
+		void Update();
+		void spill(sf::Image *imagePtr, bool *array, int x, int y, int sizeX);
 		sf::Vector2f & getLastPoint();
 		Bezier *bezier;
-
+		friend class Creator;
+		bool *boolPixels;
 	private:
+		Data *data;
+		sf::Texture texture;
+		std::vector<sf::Vector2f> visiblePoints;
+		int count = 0;
+		int lastGoodCount;
+		std::vector<sfLine>lines;
+		sf::Sprite sprite;
 
 		sf::Vector2f mousePosition;	// podobno nie trzeba
 		std::vector <sf::Vector2f> mainPoints;	// grupa stworzonych punktow, na jej podstawie rysujemy linie, obliczamy kolizje itd

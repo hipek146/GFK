@@ -2,6 +2,7 @@
 #include "Screen.hpp"
 #include "GUI/GUI.hpp"
 #include "Workspace.hpp"
+#include "Data.hpp"
 
 class Creator : public Screen {
 
@@ -18,7 +19,7 @@ public:
 private:
 	enum class DrawMode
 	{
-		Section,
+		Line,
 		Bezier,
 
 	} drawMode;
@@ -43,7 +44,7 @@ private:
 	void ClearInterface();
 
 //Draw Tab
-	void Section() { drawMode = DrawMode::Section; }
+	void Section() { drawMode = DrawMode::Line; }
 	void Bezier() { drawMode = DrawMode::Bezier; }
 	void DrawPoints() { CheckPoints(); }
 	void Generator();
@@ -90,4 +91,5 @@ private:
 
 	Touchpad *touchpad;
 
+	Data *data;
 };

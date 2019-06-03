@@ -1,9 +1,49 @@
 #include "Workspace.hpp"
 
+
+
+void Workspace::spill(sf::Image *imagePtr, bool *array, int x, int y, int sizeX)
+{
+	struct Neighbour
+	{
+		bool value;
+		int x;
+		int y;
+	};
+	std::vector<Neighbour> neighbours;
+	for (int _X = -1; _X <= 1; ++_X)
+	{
+		for (int _Y = -1; _Y <= 1; ++_Y)
+		{
+			if (_Y || _X)
+			{
+				neighbours.push_back({ array[(y + _Y) * sizeX + x + _X], x + _X, y + _Y });
+			}
+		}
+	}
+	for (auto &neighbour : neighbours)
+	{
+		if (!neighbour.value && abs(imagePtr->getPixel(x, y).r - imagePtr->getPixel(neighbour.x, neighbour.y).r) < 40)
+		{
+			array[(neighbour.y) * sizeX + neighbour.x] = true;
+		}
+	}
+}
+
 void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
+	if (bezier->isControlPoint) { //Bez jaj funkcja const a zmieniamy skladowa bezier ?!
+		bezier->CalcQuadBezier();
+	}
+	
+	target.draw(sprite);
+	for (auto &line : lines)
+	{
+		target.draw(line);
+	}
+
 
 //	FillSpaceBetweenPoints(target, states);		todo
-	DrawLinesGroup(target, states);				// rysuje utworzone linie
+	//DrawLinesGroup(target, states);				// rysuje utworzone linie
 	//if
 	if (bezier->isControlPoint) {
 		bezier->CalcQuadBezier();
@@ -12,11 +52,136 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 	else
 		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
 //	DrawDotsGroup(target, states);				// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
+	
+}
+void Workspace::Update() //Uaktualnia punkty i teksture do rysowania
+{
+	count = 0;
+	visiblePoints.clear();
+	visiblePoints.push_back({ 0.0f, static_cast<float>(size->y) });
+	sf::FloatRect rect({ 0.0f, 0.0f }, { static_cast<float>(size->x), static_cast<float>(size->y) });
+	for (auto &segment : data->segments)
+	{
+		if (rect.intersects(segment.rect))
+		{
+			count += segment.points.size();
+			visiblePoints.insert(visiblePoints.end(), segment.points.begin(), segment.points.end());
+		}
+	}
+	if (CheckAllColisions(visiblePoints.back(), { visiblePoints.back().x, static_cast<float>(size->y) }))
+	{
+		count++;
+		lines.clear();
+		for (int i = 0; i < count - 1; ++i)
+		{
+			if (i < lastGoodCount)
+			{
+				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 3.0));
+			}
+			else
+			{
+				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Yellow, 3.0));
+			}
+		}
+		return;
+	}
+	visiblePoints.push_back({ visiblePoints.back().x, static_cast<float>(size->y) });
+	visiblePoints.push_back({ 0.0f, static_cast<float>(size->y) });
+	count += 3; 
+	lastGoodCount = count - 2;
+	sf::RenderTexture renderTexture;
+	renderTexture.create(size->x, size->y);
+	renderTexture.clear(sf::Color::White);
 
+	lines.clear();
+	for (int i = 0; i < count - 1; ++i)
+	{
+		lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 3.0));
+		renderTexture.draw(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 2.0));
+	}
+	renderTexture.display();
+	sf::Image tmpImage = renderTexture.getTexture().copyToImage();
+	sf::Image *imagePtr = &tmpImage;
+
+	for (int i = 0; i < size->x * size->y; ++i)
+	{
+		boolPixels[i] = false;
+	}
+
+	if (count > 3) {
+		struct Points
+		{
+			bool value;
+			int x;
+			int y;
+		};
+		Points neighbours[8];
+		Points *points = new Points[size->x * size->y];
+		boolPixels[(size->y - 20) * size->x + 20] = true;
+		points[0] = { true, 20, static_cast<int>(size->y - 20) };
+		int i = 0, k = 0;
+		Points point, neighbour;
+		while (i >= 0)
+		{
+			point = points[i];
+			--i;
+			k = 0;
+			for (int _X = -1; _X <= 1; ++_X)
+			{
+				for (int _Y = -1; _Y <= 1; ++_Y)
+				{
+					if (_Y || _X)
+					{
+						neighbours[k] = { boolPixels[(point.y + _Y) * size->x + point.x + _X], point.x + _X, point.y + _Y };
+						++k;
+					}
+				}
+			}
+			k = 8;
+			while(k)
+			{
+				neighbour = neighbours[k];
+				if (!neighbour.value && abs(imagePtr->getPixel(point.x, point.y).r - imagePtr->getPixel(neighbour.x, neighbour.y).r) < 128)
+				{
+					boolPixels[(neighbour.y) * size->x + neighbour.x] = true;
+					++i;
+					points[i] = neighbour;
+				}
+				--k;
+			}
+		}
+		delete[] points;
+	}
+	texture.create(size->x, size->y);
+
+	sf::Uint8 *pixels = new sf::Uint8[size->x * size->y * 4];
+	for (int x = 0; x < size->x; ++x)
+	{
+		for (int y = 0; y < size->y; ++y)
+		{
+			if (boolPixels[y * size->x + x])
+			{
+				pixels[4 * (y * size->x + x) + 0] = 124;
+				pixels[4 * (y * size->x + x) + 1] = 44;
+				pixels[4 * (y * size->x + x) + 2] = 36;
+				pixels[4 * (y * size->x + x) + 3] = 255;
+			}
+			else
+			{
+				pixels[4 * (y * size->x + x) + 0] = 200;
+				pixels[4 * (y * size->x + x) + 1] = 247;
+				pixels[4 * (y * size->x + x) + 2] = 255;
+				pixels[4 * (y * size->x + x) + 3] = 255;
+			}
+		}
+	}
+	texture.update(pixels);
+	sprite.setTexture(texture);
+	delete[] pixels;
 }
 
-Workspace::Workspace(sf::Vector2u *newSize, sf::Vector2f *newPosition) : size(newSize), position(newPosition) {
-
+Workspace::Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosition) : data(newData), size(newSize), position(newPosition) {
+	boolPixels = new bool[size->x * size->y];
 	bezier = new Bezier();
 	originalSize = *size;
 	startingPoint = { 0.0, static_cast<float>(size->y / 2.0) };		// punkt poczatkowy rysowania, potem sie zrobi zeby uzytkownik mogl go wybrac
@@ -28,6 +193,7 @@ Workspace::Workspace(sf::Vector2u *newSize, sf::Vector2f *newPosition) : size(ne
 Workspace::~Workspace()
 {
 	delete bezier;
+	delete[] boolPixels;
 }
 
 bool Workspace::isMouseInWorkspaceArea(double x, double y) {		// sprawdza czy myszka jest w workspace, skaluje sie, bo size trzyma wskaznik na aktualny rozmiar
@@ -46,7 +212,7 @@ void Workspace::Resize() {
 void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const {
 
 	for (int i = 0; i < mainPoints.size() - 1; i++) {
-		sfLine currentLine(mainPoints[i], mainPoints[i + 1], sf::Color::Black, 3.0);	// wlasna klasa sfLine, wzialem ja z forum SFML, podaje sie punkty i grubosc lini do narysowania
+		sfLine currentLine(mainPoints[i], mainPoints[i + 1], sf::Color::Black, 1.0);	// wlasna klasa sfLine, wzialem ja z forum SFML, podaje sie punkty i grubosc lini do narysowania
 		currentLine.draw(target, states);		// rysuja ta linie
 	}
 }

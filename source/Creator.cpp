@@ -8,11 +8,12 @@ Creator::Creator(App *parent) : Screen(parent) {}
 Creator::~Creator()
 {
 }
-
+Segment segment;
 void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*workspace);
 	target.draw(*creatorLayout);
+	target.draw(segment);
 }
 
 
@@ -25,8 +26,8 @@ void Creator::CreateScreen() {
 	touchpad->onClick(this, &Creator::MouseClick);
 	
 	CreateInterface();
-
-	workspace = new Workspace(&workspaceSize, &workspacePosition);
+	data = new Data();
+	workspace = new Workspace(data, &workspaceSize, &workspacePosition);
 
 }
 
@@ -34,6 +35,9 @@ void Creator::ClearScreen() {
 
 	delete touchpad;
 	touchpad = nullptr;
+
+	delete data;
+	data = nullptr;
 
 	delete workspace;
 	workspace = nullptr;
@@ -213,7 +217,7 @@ void Creator::MouseMove() {
 
 	int x = app->event->mouse.x;		
 	int y = app->event->mouse.y;
-	std::cout << x << " " << y << std::endl;
+	//std::cout << x << " " << y << std::endl;
 	if (workspace->isMouseInWorkspaceArea(x, y)) {
 		workspace->UpdateMousePosition(x, y);
 	}
@@ -223,10 +227,13 @@ void Creator::MouseClick() {
 
 	int x = app->event->mouse.x;		// mouse position [x, y]
 	int y = app->event->mouse.y;		// edit: podobno do app mozna sie wszedzie dostac, potem sie refaktoryzacje zrobi
-
 	if (workspace->isMouseInWorkspaceArea(x, y)) {
 		switch (drawMode) {
-		case DrawMode::Section:
+		case DrawMode::Line:
+			if (!workspace->CheckAllColisions(workspace->getLastPoint(), { static_cast<float>(x), static_cast<float>(y) }))
+			{
+				data->Add(Segment(SegmentType::Bezier, workspace->mainPoints.back(), { static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(x), static_cast<float>(y) }));
+			}
 			workspace->AddPoint(x, y);
 
 			break;
@@ -243,6 +250,7 @@ void Creator::MouseClick() {
 				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
 				workspace->PushBesierPoints();
 				workspace->bezier->isControlPoint = false;
+				data->Add(Segment(SegmentType::Bezier, workspace->bezier->startPoint, workspace->bezier->endPoint, { static_cast<float>(x), static_cast<float>(y) }));
 			}
 			break;
 		default:
@@ -250,4 +258,5 @@ void Creator::MouseClick() {
 			break;
 		}
 	}
+	workspace->Update();
 }

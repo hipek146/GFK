@@ -18,7 +18,7 @@ class Bezier{
 
 			float step = 1.f / numSegments;
 			float t = step;
-			for (size_t i = 1; i < numSegments; i++, t += step) {
+			for (size_t i = 0; i < numSegments; i++, t += step) {
 				points.push_back(((1.f - t) * (1.f - t)) * startPoint + (2.f * (1.f - t) * t * controlPoint + t * t * endPoint));
 			}
 		}
