@@ -1,35 +1,6 @@
 #include "Workspace.hpp"
 
 
-
-void Workspace::spill(sf::Image *imagePtr, bool *array, int x, int y, int sizeX)
-{
-	struct Neighbour
-	{
-		bool value;
-		int x;
-		int y;
-	};
-	std::vector<Neighbour> neighbours;
-	for (int _X = -1; _X <= 1; ++_X)
-	{
-		for (int _Y = -1; _Y <= 1; ++_Y)
-		{
-			if (_Y || _X)
-			{
-				neighbours.push_back({ array[(y + _Y) * sizeX + x + _X], x + _X, y + _Y });
-			}
-		}
-	}
-	for (auto &neighbour : neighbours)
-	{
-		if (!neighbour.value && abs(imagePtr->getPixel(x, y).r - imagePtr->getPixel(neighbour.x, neighbour.y).r) < 40)
-		{
-			array[(neighbour.y) * sizeX + neighbour.x] = true;
-		}
-	}
-}
-
 void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 	if (bezier->isControlPoint) { //Bez jaj funkcja const a zmieniamy skladowa bezier ?!
 		bezier->CalcQuadBezier();
@@ -76,11 +47,11 @@ void Workspace::Update() //Uaktualnia punkty i teksture do rysowania
 		{
 			if (i < lastGoodCount)
 			{
-				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 3.0));
+				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 4.0));
 			}
 			else
 			{
-				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Yellow, 3.0));
+				lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Yellow, 4.0));
 			}
 		}
 		return;
@@ -96,8 +67,8 @@ void Workspace::Update() //Uaktualnia punkty i teksture do rysowania
 	lines.clear();
 	for (int i = 0; i < count - 1; ++i)
 	{
-		lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 3.0));
-		renderTexture.draw(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 2.0));
+		lines.push_back(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 4.0));
+		renderTexture.draw(sfLine(visiblePoints[i], visiblePoints[i + 1], sf::Color::Black, 3.0));
 	}
 	renderTexture.display();
 	sf::Image tmpImage = renderTexture.getTexture().copyToImage();
@@ -117,8 +88,8 @@ void Workspace::Update() //Uaktualnia punkty i teksture do rysowania
 		};
 		Points neighbours[8];
 		Points *points = new Points[size->x * size->y];
-		boolPixels[(size->y - 20) * size->x + 20] = true;
-		points[0] = { true, 20, static_cast<int>(size->y - 20) };
+		boolPixels[(size->y - 4) * size->x + 4] = true;
+		points[0] = { true, 4, static_cast<int>(size->y - 4) };
 		int i = 0, k = 0;
 		Points point, neighbour;
 		while (i >= 0)

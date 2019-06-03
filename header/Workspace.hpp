@@ -25,7 +25,6 @@ class Workspace : public sf::Drawable {
 		void DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const;
 		bool CheckBezierColisions()const;
 		void Update();
-		void spill(sf::Image *imagePtr, bool *array, int x, int y, int sizeX);
 		sf::Vector2f & getLastPoint();
 		Bezier *bezier;
 		friend class Creator;
