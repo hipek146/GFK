@@ -317,6 +317,7 @@ void Workspace::PushBesierPoints() {
 
 void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, double *surfacePixels)
 {
+
 	double fNoise;
 	double fScaleAcc = 0;
 	double fScale;
@@ -338,6 +339,8 @@ void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, doubl
 			break;
 		}
 		fScaleAcc += fScale;
+
+
 		for (int x = 0; x < nCount; ++x)
 		{
 			nSample1 = ((int)x / nPitch)*nPitch;
@@ -350,9 +353,12 @@ void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, doubl
 			surfacePixels[x] += (fNoise);
 
 		}
+
 	}
 	for (int x = 0; x < nCount; ++x) {
 		surfacePixels[x] /= fScaleAcc;
+		            std::cout << surfacePixels[x] << std::endl;
+
 	}
 
 }
