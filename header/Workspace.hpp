@@ -29,10 +29,13 @@ class Workspace : public sf::Drawable {
 		Bezier *bezier;
 		friend class Creator;
 		bool *boolPixels;
+		void PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, double *surfacePixels);
+			void perlinNoise();
 	private:
 		Data *data;
 		sf::Texture texture;
 		std::vector<sf::Vector2f> visiblePoints;
+		sf::Uint8 *mapPixels;
 		int count = 0;
 		int lastGoodCount;
 		std::vector<sfLine>lines;

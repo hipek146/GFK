@@ -5,7 +5,7 @@
 #include "Config.hpp"
 #include "Event.hpp"
 #include "App.hpp"
-
+#include <stdlib.h>
 #include "SFML/Graphics.hpp"
 
 
@@ -17,6 +17,7 @@ int main()
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Config config(L"config.ini");
+	srand(time(NULL));
 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = config(L"antialiasing");

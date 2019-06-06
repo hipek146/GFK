@@ -63,6 +63,8 @@ void Creator::ResizeScreen()
 
 void Creator::Generator()
 {
+	workspace->perlinNoise();
+	workspace->bezier->points.clear();
 }
 
 void Creator::CheckPoints()
