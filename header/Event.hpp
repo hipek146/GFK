@@ -183,7 +183,8 @@ public:
 	struct {
 		int x = 0;
 		int y = 0;
-		bool leftClick;
+		bool left;
+		bool right;
 	}mouse;
 
 private:

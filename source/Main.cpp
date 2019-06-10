@@ -22,6 +22,11 @@ int main()
 	settings.antialiasingLevel = config(L"antialiasing");
 
 	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł", sf::Style::Default, settings);
+	sf::View view;
+	view.reset(sf::FloatRect(0.0f, 0.0f, (float)(double)config(L"width"), (float)(double)config(L"height")));
+	view.zoom(2.0f);
+	//window.setView(view);
+	
 
 	window.setFramerateLimit(60);
 

@@ -34,7 +34,7 @@ public:
 		}
 	}
 	template <typename T>
-	void Add(GUI *newButton, T* screen, Layout* newLayout)
+	void Add(GUI *newButton, T* screen, Layout* newLayout, void(T::*callback)())
 	{
 		buttons.push_back(newButton);
 		layouts.push_back(newLayout);
@@ -42,6 +42,8 @@ public:
 		screen->AddEvent(&buttons.back()->rect, newButton, newButton, &GUI::MouseOver, EventType::MouseOver);
 		screen->AddEvent(&buttons.back()->rect, newButton, newButton, &GUI::MouseOut, EventType::MouseOut);
 		screen->AddEvent(&buttons.back()->rect, newButton, newButton, &GUI::Callback, EventType::Pressed);
+		newButton->SetEvents(screen);
+		newButton->callbackHandle = std::bind(callback, screen);
 		newButton->parentLayout = this;
 		newButton->parent = screen;
 		newButton->SetColor(color);

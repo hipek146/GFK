@@ -17,13 +17,15 @@ void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 
-void Creator::CreateScreen() {
+void Creator::CreateScreen() 
+{
 
 	ResizeScreen();
 
 	touchpad = new Touchpad(this, size);
 	touchpad->onMouseMove(this, &Creator::MouseMove);
 	touchpad->onClick(this, &Creator::MouseClick);
+	touchpad->onReleased(this, &Creator::MouseReleased);
 	
 	CreateInterface();
 	data = new Data();
@@ -31,7 +33,8 @@ void Creator::CreateScreen() {
 
 }
 
-void Creator::ClearScreen() {
+void Creator::ClearScreen() 
+{
 
 	delete touchpad;
 	touchpad = nullptr;
@@ -81,7 +84,8 @@ void Creator::CheckPoints()
 		vectorEditPoints->Inactive(1);
 		vectorWaterPoints->Inactive(1);
 	}
-
+	workspace->isPoints = points;
+	workspace->Update();
 }
 
 
@@ -135,7 +139,7 @@ void Creator::CreateInterface()
 	containerDraw->SetBottom(2);
 	containerDraw->Add(this, vectorDrawGenerator);
 	containerDraw->SetBottom(3);
-	tabsLayout->Add(new Button(L"Rysuj"), this, containerDraw);
+	tabsLayout->Add(new Button(L"Rysuj"), this, containerDraw, &Creator::DrawON);
 
 
 	///////////////////////////Edytuj///////////////////////////////
@@ -161,9 +165,9 @@ void Creator::CreateInterface()
 	containerEdit->SetElementSizeY(3, 50.0f);
 	containerEdit->SetBottom(3);
 
-	tabsLayout->Add(new Button(L"Edytuj"), this, containerEdit);
+	tabsLayout->Add(new Button(L"Edytuj"), this, containerEdit, &Creator::EditON);
 
-	creatorTabs->Add(new Button(L"Teren"), this, tabsLayout);
+	creatorTabs->Add(new Button(L"Teren"), this, tabsLayout, &Creator::TerrianON);
 	///////////////////////////Woda///////////////////////////////
 	containerWater = new ContainerGUI(layoutSize);
 
@@ -190,7 +194,7 @@ void Creator::CreateInterface()
 	containerWater->SetElementSizeY(3, 50.0f);
 	containerWater->SetBottom(3);
 
-	creatorTabs->Add(new Button(L"Woda"), this, containerWater);
+	creatorTabs->Add(new Button(L"Woda"), this, containerWater, &Creator::WaterON);
 
 	/////////////////////////Opcje/////////////////////////////////
 	layoutOptions = new MenuLayout(layoutSize);
@@ -203,7 +207,7 @@ void Creator::CreateInterface()
 	layoutOptions->ADD(new Button(L"Wstecz"), &Creator::GoToMenu);
 	layoutOptions->ADD(new Button(L"Wyjscie"), &Creator::Exit);
 
-	creatorTabs->Add(new Button(L"Opcje"), this, layoutOptions);
+	creatorTabs->Add(new Button(L"Opcje"), this, layoutOptions, &Creator::OptionsON);
 	///////////////////////////////////////////////////////////////
 	creatorLayout->Add(creatorTabs);
 }
@@ -213,44 +217,93 @@ void Creator::ClearInterface()
 	creatorLayout = nullptr;
 }
 
-void Creator::MouseMove() {
-
-	int x = app->event->mouse.x;		
+void Creator::MouseMove()
+{
+	/*std::cout << std::boolalpha
+		<< " teren: " << isTerrian
+		<< " draw: " << isDraw
+		<< " edit: " << isEdit
+		<< " water: " << isWater
+		<< "\n<<<<<<\n";*/
+	int x = app->event->mouse.x;
 	int y = app->event->mouse.y;
 	//std::cout << x << " " << y << std::endl;
 	if (workspace->isMouseInWorkspaceArea(x, y)) {
 		workspace->UpdateMousePosition(x, y);
 	}
+
+	if (move)
+	{
+		workspace->Move({ saveMouseX - x, saveMouseY - y });
+		saveMouseX = x;
+		saveMouseY = y;
+	}
+
+	if (spill)
+	{
+		workspace->AddWater(x, y, waterScroll / 10.0f);
+		workspace->Update();
+		return;
+	}
 }
 
-void Creator::MouseClick() {
+void Creator::MouseReleased() 
+{
+	move = false;
+	spill = false;
+}
+
+
+void Creator::MouseClick() 
+{
+	if (app->event->mouse.right)
+	{
+		move = true;
+		saveMouseX = app->event->mouse.x;
+		saveMouseY = app->event->mouse.y;
+		return;
+	}
 
 	int x = app->event->mouse.x;		// mouse position [x, y]
 	int y = app->event->mouse.y;		// edit: podobno do app mozna sie wszedzie dostac, potem sie refaktoryzacje zrobi
-	if (workspace->isMouseInWorkspaceArea(x, y)) {
+	if (isWater && waterMode == WaterMode::Spill)
+	{
+		spill = true;
+		return;
+	}
+	else if (isWater && waterMode == WaterMode::Simple)
+	{
+		workspace->AddSimpleWater(x, y);
+		workspace->Update();
+		return;
+	}
+	if (isDraw) {
+		bool isOK;
 		switch (drawMode) {
 		case DrawMode::Line:
-			if (!workspace->CheckAllColisions(workspace->getLastPoint(), { static_cast<float>(x), static_cast<float>(y) }))
+			isOK = workspace->AddPoint(x, y);
+			if (isOK)
 			{
-				data->Add(Segment(SegmentType::Bezier, workspace->mainPoints.back(), { static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(x), static_cast<float>(y) }));
+				data->Add(Segment(SegmentType::Bezier, workspace->mainPoints[workspace->mainPoints.size() - 2], workspace->mainPoints.back(), workspace->mainPoints.back()));
+				workspace->Update();
 			}
-			workspace->AddPoint(x, y);
 
 			break;
 		case DrawMode::Bezier:
 			if (!workspace->bezier->isControlPoint) {
 
-				if (!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y))) {
+				if (!workspace->CheckAllColisions(workspace->getLastPoint(), sf::Vector2f(x, y) + workspace->moveVector + workspace->areaOffset)) {
 					workspace->bezier->setStartPoint(workspace->getLastPoint());
-					workspace->bezier->setEndPoint(1.0 * x, 1.0 * y);
+					workspace->bezier->setEndPoint(1.0 * x + workspace->moveVector.x + workspace->areaOffset.x, 1.0 * y + workspace->moveVector.y + workspace->areaOffset.y);
 					workspace->bezier->isControlPoint = true;
 				}
 			}
 			else if(!workspace->CheckBezierColisions()) {
-				workspace->bezier->setControlPoint(1.0 * x, 1.0 * y);
+				workspace->bezier->setControlPoint(1.0 * x + workspace->moveVector.x + workspace->areaOffset.x, 1.0 * y + workspace->moveVector.y + workspace->areaOffset.y);
 				workspace->PushBesierPoints();
 				workspace->bezier->isControlPoint = false;
-				data->Add(Segment(SegmentType::Bezier, workspace->bezier->startPoint, workspace->bezier->endPoint, { static_cast<float>(x), static_cast<float>(y) }));
+				data->Add(Segment(SegmentType::Bezier, workspace->bezier->startPoint, workspace->bezier->endPoint, workspace->bezier->controlPoint));
+				workspace->Update();
 			}
 			break;
 		default:
@@ -258,5 +311,4 @@ void Creator::MouseClick() {
 			break;
 		}
 	}
-	workspace->Update();
 }

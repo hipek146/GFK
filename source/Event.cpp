@@ -57,6 +57,15 @@ void Event::operator () ()
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
 	{
+		if (event.mouseButton.button == sf::Mouse::Left)
+		{
+			mouse.left = true;
+		}
+		else
+		{
+			mouse.right = true;
+		}
+
 		if (textInputPtr != nullptr && textInputPtr->textInput)
 		{
 			textInputPtr->textInput = false;
@@ -65,6 +74,11 @@ void Event::operator () ()
 				textInputPtr->callbackHandle[EventType::TextOff]();
 			}
 		}
+	}
+	else if (event.type == sf::Event::MouseButtonReleased)
+	{
+		mouse.left = false;
+		mouse.right = false;
 	}
 	for (auto &element : handle)
 	{
@@ -111,7 +125,7 @@ void Event::operator () ()
 			break;
 		}
 	}
-	int length = handle.size();
+	int length = static_cast<int>(handle.size());
 	bool flag = false;
 	for (auto &element : handle)
 	{
