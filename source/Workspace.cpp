@@ -22,7 +22,6 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 //	DrawDotsGroup(target, states);				// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
 
 }
-
 void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowania
 {
 
@@ -31,8 +30,8 @@ void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowan
 		if (async) return;
 		async = true;
 
-		area.left = 0;// moveVector.x;
-		area.top = 0;// moveVector.y;
+		area.left = moveVector.x;
+		area.top = moveVector.y;
 		count = 0;
 		visiblePoints.clear();
 		sf::FloatRect rect(area);

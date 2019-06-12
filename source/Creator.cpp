@@ -81,6 +81,7 @@ void Creator::Generator()
 
 }
 
+
 void Creator::CheckPoints()
 {
 	if (points) points = false; else points = true;
@@ -245,12 +246,12 @@ void Creator::MouseMove()
 		workspace->UpdateMousePosition(x, y);
 	}
 
-	//if (move)
-	//{
-	//	workspace->Move({ saveMouseX - x, saveMouseY - y });
-	//	saveMouseX = x;
-	//	saveMouseY = y;
-	//}
+	if (move)
+	{
+		workspace->Move({ saveMouseX - x, 0 });
+		saveMouseX = x;
+		saveMouseY = y;
+	}
 
 	if (spill)
 	{
