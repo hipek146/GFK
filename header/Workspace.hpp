@@ -34,6 +34,9 @@ class Workspace : public sf::Drawable {
 		friend class Creator;
 		bool *boolPixels;
 		bool isPoints = false;
+		void perlinNoise();
+		void PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, double *surfacePixels);
+
 	private:
 		Data *data;
 		sf::Texture texture;

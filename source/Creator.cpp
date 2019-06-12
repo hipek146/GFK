@@ -1,4 +1,5 @@
-﻿#include "Creator.hpp"
+﻿
+#include "Creator.hpp"
 #include "Dictionary.hpp"
 #include <iostream>
 
@@ -17,7 +18,7 @@ void Creator::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 
-void Creator::CreateScreen() 
+void Creator::CreateScreen()
 {
 
 	ResizeScreen();
@@ -26,14 +27,14 @@ void Creator::CreateScreen()
 	touchpad->onMouseMove(this, &Creator::MouseMove);
 	touchpad->onClick(this, &Creator::MouseClick);
 	touchpad->onReleased(this, &Creator::MouseReleased);
-	
+
 	CreateInterface();
 	data = new Data();
 	workspace = new Workspace(data, &workspaceSize, &workspacePosition);
 
 }
 
-void Creator::ClearScreen() 
+void Creator::ClearScreen()
 {
 
 	delete touchpad;
@@ -52,9 +53,9 @@ void Creator::ResizeScreen()
 {
 	layoutSize = { 400, size->y };
 	layoutPosition = { size->x - 400.0f, 0 };
-	
+
 	workspaceSize = { size->x, size->y };
-//	workspacePosition = { ..., ... };		// jak bedziemy chcieli zmienic polozenie, na razie jest [0,0]
+	//	workspacePosition = { ..., ... };		// jak bedziemy chcieli zmienic polozenie, na razie jest [0,0]
 
 	if (creatorLayout != nullptr) {
 		touchpad->Resize();
@@ -66,6 +67,18 @@ void Creator::ResizeScreen()
 
 void Creator::Generator()
 {
+	ClearScreen();
+	CreateScreen();
+	workspace->perlinNoise();
+
+	//  Segment segment;
+	//	for (int i = 0; i < workspace->mainPoints.size(); ++i) {
+	//		segment.points.push_back(workspace->mainPoints[i]);
+	//	}
+	//	segment.rect = sf::FloatRect(workspace->mainPoints[0], workspace->mainPoints.back());
+	//  data->Add(segment);
+	//  workspace->Update();
+
 }
 
 void Creator::CheckPoints()
@@ -232,12 +245,12 @@ void Creator::MouseMove()
 		workspace->UpdateMousePosition(x, y);
 	}
 
-	if (move)
-	{
-		workspace->Move({ saveMouseX - x, saveMouseY - y });
-		saveMouseX = x;
-		saveMouseY = y;
-	}
+	//if (move)
+	//{
+	//	workspace->Move({ saveMouseX - x, saveMouseY - y });
+	//	saveMouseX = x;
+	//	saveMouseY = y;
+	//}
 
 	if (spill)
 	{
@@ -247,14 +260,14 @@ void Creator::MouseMove()
 	}
 }
 
-void Creator::MouseReleased() 
+void Creator::MouseReleased()
 {
 	move = false;
 	spill = false;
 }
 
 
-void Creator::MouseClick() 
+void Creator::MouseClick()
 {
 	if (app->event->mouse.right)
 	{
@@ -298,7 +311,7 @@ void Creator::MouseClick()
 					workspace->bezier->isControlPoint = true;
 				}
 			}
-			else if(!workspace->CheckBezierColisions()) {
+			else if (!workspace->CheckBezierColisions()) {
 				workspace->bezier->setControlPoint(1.0 * x + workspace->moveVector.x + workspace->areaOffset.x, 1.0 * y + workspace->moveVector.y + workspace->areaOffset.y);
 				workspace->PushBesierPoints();
 				workspace->bezier->isControlPoint = false;
