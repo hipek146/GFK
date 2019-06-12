@@ -71,13 +71,13 @@ void Creator::Generator()
 	CreateScreen();
 	workspace->perlinNoise();
 
-	//  Segment segment;
-	//	for (int i = 0; i < workspace->mainPoints.size(); ++i) {
-	//		segment.points.push_back(workspace->mainPoints[i]);
-	//	}
-	//	segment.rect = sf::FloatRect(workspace->mainPoints[0], workspace->mainPoints.back());
-	//  data->Add(segment);
-	//  workspace->Update();
+	  Segment segment;
+		for (int i = 0; i < workspace->mainPoints.size(); ++i) {
+			segment.points.push_back(workspace->mainPoints[i]);
+		}
+		segment.rect = sf::FloatRect({ workspace->mainPoints[0].x, 0 },sf::Vector2f(size->x, size->y));
+	  data->Add(segment);
+	  workspace->Update();
 
 }
 

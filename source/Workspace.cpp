@@ -524,11 +524,8 @@ void Workspace::perlinNoise()
 
 			}
 		}
-		AddPoint(x, static_cast<int>((surfaceVector[x])*mapHeight));
+		mainPoints.push_back({ static_cast<float>(x), static_cast<float>((surfaceVector[x])*mapHeight) });
 	}
-	texture.create(size->x, size->y);
-	texture.update(mapPixels);
-	sprite->setTexture(texture);
 	delete[] mapPixels;
 	delete[] noiseSeed;
 	delete[] surfaceVector;
