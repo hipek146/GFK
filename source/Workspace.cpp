@@ -1,4 +1,3 @@
-
 #include "Workspace.hpp"
 
 void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const
@@ -11,6 +10,7 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const
 		}
 		else
 			DrawCurrentLine(target, states);	
+
 	}
 }
 void Workspace::Update(bool waterFlag) 
@@ -719,3 +719,95 @@ void Workspace::PushBesierPoints()
 }
 
 
+void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, double *surfacePixels)
+{
+
+	double fNoise;
+	double fScaleAcc = 0;
+	double fScale;
+	int nPitch;
+	int nSample1;
+	int nSample2;
+	double fBlend;
+	double fSample;
+
+	for (int x = 0; x < nCount; ++x) {
+		surfacePixels[x] = 0;
+	}
+
+	for (int o = 0; o < nOctaves; ++o) {
+		fNoise = 0;
+		fScale = (1.0 / pow(2, o));
+		nPitch = (int)nCount / pow(2, o);
+		if (nPitch == 0) {
+			break;
+		}
+		fScaleAcc += fScale;
+
+
+		for (int x = 0; x < nCount; ++x)
+		{
+			nSample1 = ((int)x / nPitch)*nPitch;
+			nSample2 = (nSample1 + nPitch) % nCount;
+
+			fBlend = static_cast<double>((x - nSample1) / (double)nPitch);
+			fSample = (1.0f - fBlend) * noiseSeed[nSample1] + fBlend * noiseSeed[nSample2];
+
+			fNoise = fSample * fScale;
+			surfacePixels[x] += (fNoise);
+
+		}
+
+	}
+	for (int x = 0; x < nCount; ++x) {
+		surfacePixels[x] /= fScaleAcc;
+		            std::cout << surfacePixels[x] << std::endl;
+
+	}
+
+}
+
+
+void Workspace::perlinNoise()
+{
+	
+	int mapWidth =  size->x;
+	int mapHeight = size->y;
+
+	double *noiseSeed = new double[mapWidth];
+	double *surfaceVector = new double[mapWidth];;
+
+	sf::Uint8  *mapPixels = new sf::Uint8[4*mapWidth*mapHeight];
+
+	for (int i = 0; i < mapWidth; i++)
+		noiseSeed[i] = ((double)rand() / (double)RAND_MAX);
+
+	PerlinNoise1D(mapWidth, noiseSeed, 12, surfaceVector);
+
+		for (int x = 0; x < mapWidth; ++x)
+			for (int y = 0; y < mapHeight; ++y)
+			{
+				if (y > static_cast<int>((surfaceVector[x])*mapHeight))
+				{
+					mapPixels[4 * (y * size->x + x) + 0] = 124;
+					mapPixels[4 * (y * size->x + x) + 1] = 44;
+					mapPixels[4 * (y * size->x + x) + 2] = 36;
+					mapPixels[4 * (y * size->x + x) + 3] = 255;
+				}
+				else
+				{
+					mapPixels[4 * (y * size->x + x) + 0] = 200;
+					mapPixels[4 * (y * size->x + x) + 1] = 247;
+					mapPixels[4 * (y * size->x + x) + 2] = 255;
+					mapPixels[4 * (y * size->x + x) + 3] = 255;
+
+				}
+			}
+
+		texture.create(size->x, size->y);
+		texture.update(mapPixels);
+		sprite.setTexture(texture);
+		delete[] mapPixels;
+		delete[] noiseSeed;
+		delete[] surfaceVector;
+}

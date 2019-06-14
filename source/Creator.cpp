@@ -82,7 +82,6 @@ void Creator::Generator()
 		segment.rect = sf::FloatRect({ workspace->mainPoints[0].x, 0 },sf::Vector2f(size->x, size->y));
 	  data->Add(segment);
 	  workspace->Update();
-
 }
 
 

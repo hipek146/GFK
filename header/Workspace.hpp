@@ -41,6 +41,7 @@ class Workspace : public sf::Drawable {
 		sf::Texture texture;
 		
 		std::vector<sf::Vector2f> visiblePoints;
+		sf::Uint8 *mapPixels;
 		int count = 0;
 		int lastGoodCount;
 		std::vector<sfLine>lines;
