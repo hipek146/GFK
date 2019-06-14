@@ -6,6 +6,7 @@
 
 class Creator : public Screen {
 
+
 public:
 
 	Creator(App *parent);

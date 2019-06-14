@@ -10,6 +10,7 @@ enum class SegmentType
 
 class Segment : public sf::Drawable
 {
+	friend class App;
 public:
 	Segment() = default;
 	Segment(SegmentType type, sf::Vector2f start, sf::Vector2f end, sf::Vector2f parameter = {})

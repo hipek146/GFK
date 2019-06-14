@@ -2,11 +2,13 @@
 #include "Config.hpp"
 #include "Event.hpp"
 #include "SFML/Graphics.hpp"
-
+#include "Workspace.hpp"
 class Screen;
 class DialogBox;
 class VectorGUI;
 class TextInput;
+class Data;
+class Workspace;
 
 class App : public sf::Drawable
 {
@@ -34,6 +36,8 @@ public:
 private:
 	void Blank() {}
 
+	Data *data;
+	Workspace *workspace;
 	Screen *menu;
 	Screen *creator;
 	

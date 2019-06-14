@@ -30,7 +30,10 @@ void Creator::CreateScreen()
 
 	CreateInterface();
 	data = new Data();
+	app->data = data;
 	workspace = new Workspace(data, &workspaceSize, &workspacePosition);
+	app->workspace = workspace;
+
 
 }
 
@@ -42,10 +45,10 @@ void Creator::ClearScreen()
 
 	delete data;
 	data = nullptr;
-
+	app->data = nullptr;
 	delete workspace;
 	workspace = nullptr;
-
+	app->workspace = nullptr;
 	ClearInterface();
 }
 

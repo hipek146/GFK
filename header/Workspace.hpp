@@ -6,6 +6,7 @@
 
 class Workspace : public sf::Drawable {
 	
+	friend class App;
 	public:
 
 		Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosition);

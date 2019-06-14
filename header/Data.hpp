@@ -3,6 +3,7 @@
 #include "Water.hpp"
 #include <iostream>
 #include <list>
+#include "Data.hpp"
 
 struct myLine
 {
@@ -12,6 +13,7 @@ struct myLine
 
 class Data
 {
+	friend class App;
 public:
 	std::vector<sf::Vector2f> GetVisiblePoints(sf::FloatRect rect)
 	{

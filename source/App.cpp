@@ -111,6 +111,8 @@ void App::Load()
 {
 	std::wifstream file;
 	file.open(std::wstring(L"saves\\") + filenames[layoutSave->lastPressed]);
+	
+	Segment segment;
 	if (file)
 	{
 		file.seekg(0, file.end);
@@ -120,11 +122,35 @@ void App::Load()
 		file.seekg(0, file.beg);
 		wchar_t *buffer = new wchar_t[length + 1];
 
+		creator->ClearScreen();
+		creator->CreateScreen();
+
 		file.read(buffer, length);
 		buffer[length] = '\0';
+		int y;
+		int x;
+		x = _wtoi(&buffer[0]);
+		bool flag = true;
+		for (int i = 0; i < length; ++i) {
+			if (buffer[i] == '\n' && flag == false) {
+		
+				x = _wtoi(&buffer[i]);
+				flag = true;
+			}
+			else if (buffer[i] == '\n' && flag == true) {
+				y = _wtoi(&buffer[i]);
+				workspace->mainPoints.push_back(sf::Vector2f(x, y));
+				std::cout << x << std::endl << y << std::endl;
+				segment.points.push_back(sf::Vector2f(x, y));
+				flag = false;
+			}
+			
+		}
+		segment.rect = sf::FloatRect({ workspace->mainPoints[0].x, 0 }, sf::Vector2f(size->x, size->y));
+		data->Add(segment);
 
-		//std::wcout << buffer << std::endl;
-
+		workspace->Update();
+		CloseLoadDialog();
 		file.close();
 		delete[] buffer;
 	}
@@ -168,13 +194,22 @@ void App::CloseSaveDialog()
 
 void App::Save()
 {
+	//creator->
 	std::wofstream file;
 	file.open(std::wstring(L"saves\\") + textInputSave->GetString().toWideString());
 	if (file)
 	{
-		file << L"To jest plik o nazwie " << textInputSave->GetString().toWideString();
+		for (auto &it : workspace->mainPoints) {
+
+				file << it.x << "\n" << it.y << "\n";
+
+		}
+		
+		//file << L"To jest plik o nazwie " << textInputSave->GetString().toWideString();
 		file.close();
+
 	}
+
 	CloseSaveDialog();
 }
 
