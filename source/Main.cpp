@@ -9,9 +9,6 @@
 #include "SFML/Graphics.hpp"
 
 
-//#define main WinMain
-
-
 int WinMain()
 {
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -47,4 +44,9 @@ int WinMain()
 		window.display();
 	}
 	return 0;
+}
+
+int main()
+{
+	return WinMain();
 }

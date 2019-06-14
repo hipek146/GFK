@@ -25,6 +25,8 @@ public:
 
 	void LoadDialog();
 	void CloseLoadDialog();
+	void WaterInfoDialog();
+	void CloseWaterInfoDialog();
 	void Load();
 	void SaveDialog();
 	void CloseSaveDialog();
@@ -48,6 +50,7 @@ private:
 	VectorGUI *layoutSave;
 	TextInput *textInputSave;
 	DialogBox *loadDialog;
+	DialogBox *waterInfoDialog;
 	DialogBox *saveDialog;
 	sf::Vector2u defaultSizeDialog{ 500, 600 };
 	sf::Vector2u sizeDialog{ defaultSizeDialog };

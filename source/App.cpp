@@ -21,6 +21,7 @@ App::~App()
 	{
 		delete loadDialog;
 		delete saveDialog;
+		delete waterInfoDialog;
 		screen->ClearScreen();
 	}
 	delete menu;
@@ -37,6 +38,10 @@ void App::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	else if (saveDialog != nullptr)
 	{
 		target.draw(*saveDialog);
+	}
+	if (waterInfoDialog != nullptr)
+	{
+		target.draw(*waterInfoDialog);
 	}
 }
 
@@ -63,6 +68,7 @@ void App::LoadDialog()
 {
 	CloseSaveDialog();
 	CloseLoadDialog();
+	CloseWaterInfoDialog();
 	filenames.clear();
 
 	loadDialog = new DialogBox(screen, L"Wczytaj teren", { sizeDialog }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y) / 2.0f });
@@ -151,15 +157,52 @@ void App::Load()
 
 		workspace->Update();
 		CloseLoadDialog();
+		if (true)
+		{
+			WaterInfoDialog();
+		}
 		file.close();
 		delete[] buffer;
 	}
+}
+void App::WaterInfoDialog()
+{
+	CloseSaveDialog();
+	CloseLoadDialog();
+	CloseWaterInfoDialog();
+
+	waterInfoDialog = new DialogBox(screen, L"Przykra nowina :(", { sf::Vector2u(sizeDialog.x, sizeDialog.y / 2u) }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y / 2u) / 2.0f });
+	VectorGUI *textInfo = new VectorGUI(sizeDialog);
+	textInfo->Add(new TextBox(L"Od Twojego ostatniego pobytu\n walczylismy z susza i cala woda\n\t\t\t\t\twyparowala."), screen, &Screen::Blank);
+	waterInfoDialog->Add(this, textInfo);
+	waterInfoDialog->SetElementSizeY(1, 130.0f);
+	waterInfoDialog->SetPadding(15.0f);
+
+	VectorGUI *buttonInfo = new VectorGUI(sizeDialog);
+	Button *button = new Button("Rozumiem *");
+	buttonInfo->Add(button, screen, &Screen::Blank);
+	event->Add(&button->rect, this, button, &App::CloseWaterInfoDialog, EventType::Pressed);
+	button->SetEvents(screen);
+	button->callbackHandle = std::bind(&App::CloseWaterInfoDialog, this);
+	button->parent = screen;
+	button->parentLayout = buttonInfo;
+
+	waterInfoDialog->Add(this, buttonInfo);
+	waterInfoDialog->SetElementSizeY(2, 100.0f);
+	waterInfoDialog->SetBottom(2);
+}
+
+void App::CloseWaterInfoDialog()
+{
+	delete waterInfoDialog;
+	waterInfoDialog = nullptr;
 }
 
 void App::SaveDialog()
 {
 	CloseSaveDialog();
 	CloseLoadDialog();
+	CloseWaterInfoDialog();
 
 	saveDialog = new DialogBox(screen, L"Zapisz teren", { sizeDialog }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y) / 2.0f });
 
