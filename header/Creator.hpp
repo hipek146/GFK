@@ -75,10 +75,6 @@ private:
 	void CheckPoints();
 	void Blank() {}
 
-
-	void ChangeDrawingTypeToBezier();
-	void ChangeDrawingTypeToLines();
-
 	enum drawingOptions {
 		LINE,
 		QUAD_BEZIER,

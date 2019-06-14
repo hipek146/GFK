@@ -1,30 +1,19 @@
 
 #include "Workspace.hpp"
 
-void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
-
+void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
 	target.draw(*sprite);
-	/*for (auto &line : lines)
-	{
-		target.draw(line);
-	}*/
-
-
-	//	FillSpaceBetweenPoints(target, states);		todo
-		//DrawLinesGroup(target, states);				// rysuje utworzone linie
-		//if
 	if ((*isDraw) == true) {
 		if (bezier->isControlPoint) {
 			bezier->CalcQuadBezier();
 			DrawCurrentCurve(target, states);
 		}
 		else
-			DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
-	//	DrawDotsGroup(target, states);			
-	}// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
-
+			DrawCurrentLine(target, states);	
+	}
 }
-void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowania
+void Workspace::Update(bool waterFlag) 
 {
 
 	ans = std::async([&]() mutable
@@ -406,7 +395,6 @@ void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowan
 			waterLine[1].position = sf::Vector2f(water.right, water.deep) - offset;
 			renderTexture.draw(waterLine, 2, sf::Lines);
 		}
-		//renderTexture.draw(circl);
 		for (auto &circle : circlePoints)
 		{
 			renderTexture.draw(circle);
@@ -453,11 +441,13 @@ void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, doubl
 	double fBlend;
 	double fSample;
 
-	for (int x = 0; x < nCount; ++x) {
+	for (int x = 0; x < nCount; ++x)
+	{
 		surfacePixels[x] = 0;
 	}
 
-	for (int o = 0; o < nOctaves; ++o) {
+	for (int o = 0; o < nOctaves; ++o)
+	{
 		fNoise = 0;
 		fScale = (1.0 / pow(2, o));
 		nPitch = (int)nCount / pow(2, o);
@@ -481,10 +471,9 @@ void Workspace::PerlinNoise1D(int nCount, double *noiseSeed, int nOctaves, doubl
 		}
 
 	}
-	for (int x = 0; x < nCount; ++x) {
+	for (int x = 0; x < nCount; ++x)
+	{
 		surfacePixels[x] /= fScaleAcc;
-		//	std::cout << surfacePixels[x] << std::endl;
-
 	}
 
 }
@@ -506,7 +495,8 @@ void Workspace::perlinNoise()
 
 	PerlinNoise1D(mapWidth, noiseSeed, 12, surfaceVector);
 
-	for (int x = 0; x < mapWidth; ++x) {
+	for (int x = 0; x < mapWidth; ++x)
+	{
 		for (int y = 0; y < mapHeight; ++y)
 		{
 			if (y > static_cast<int>((surfaceVector[x])*mapHeight))
@@ -551,7 +541,8 @@ void Workspace::AddSimpleWater(int x, int y)
 	isSimpleWater = true;
 }
 
-Workspace::Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosition) : data(newData), size(newSize), position(newPosition) {
+Workspace::Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosition) : data(newData), size(newSize), position(newPosition)
+{
 	areaOffset = { static_cast<float>(size->x) * 0.3f, static_cast<float>(size->y) * 0.3f };
 	spriteRelativePosition = areaOffset;
 	area = { -areaOffset, {static_cast<float>(size->x) + areaOffset.x * 2.0f, static_cast<float>(size->y) + areaOffset.y * 2.0f} };
@@ -561,8 +552,8 @@ Workspace::Workspace(Data *newData, sf::Vector2u *newSize, sf::Vector2f *newPosi
 
 	bezier = new Bezier();
 	originalSize = *size;
-	startingPoint = { 0.0, static_cast<float>(size->y / 2.0) };		// punkt poczatkowy rysowania, potem sie zrobi zeby uzytkownik mogl go wybrac
-	endingPoint = mousePosition = startingPoint;					// ostatni punkt rysowania, na razie to jest ten sam
+	startingPoint = { 0.0, static_cast<float>(size->y / 2.0) };		
+	endingPoint = mousePosition = startingPoint;					
 	mainPoints.push_back(startingPoint);
 	mainPoints.push_back(startingPoint);
 }
@@ -574,8 +565,8 @@ Workspace::~Workspace()
 	delete bezier;
 }
 
-bool Workspace::isMouseInWorkspaceArea(double x, double y) {		// sprawdza czy myszka jest w workspace, skaluje sie, bo size trzyma wskaznik na aktualny rozmiar
-
+bool Workspace::isMouseInWorkspaceArea(double x, double y) 
+{		
 	if (position->x <= x && x <= position->x + size->x)
 		if (position->y <= y && y <= position->y + size->y)
 			return true;
@@ -583,61 +574,72 @@ bool Workspace::isMouseInWorkspaceArea(double x, double y) {		// sprawdza czy my
 }
 
 
-void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const {
-
-	for (int i = 0; i < mainPoints.size() - 1; i++) {
-		sfLine currentLine(mainPoints[i], mainPoints[i + 1], sf::Color::Black, 1.0);	// wlasna klasa sfLine, wzialem ja z forum SFML, podaje sie punkty i grubosc lini do narysowania
-		currentLine.draw(target, states);		// rysuja ta linie
+void Workspace::DrawLinesGroup(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (int i = 0; i < mainPoints.size() - 1; i++) 
+	{
+		sfLine currentLine(mainPoints[i], mainPoints[i + 1], sf::Color::Black, 1.0);	
+		currentLine.draw(target, states);		
 	}
 }
 
 
-void Workspace::DrawCurrentLine(sf::RenderTarget& target, sf::RenderStates states) const {	// rysuje utworzone linie
-
+void Workspace::DrawCurrentLine(sf::RenderTarget& target, sf::RenderStates states) const 
+{	
 	sf::Color lineColor;
-	if (CheckAllColisions(mainPoints.back(), mousePosition + moveVector + areaOffset)) {
+	if (CheckAllColisions(mainPoints.back(), mousePosition + moveVector + areaOffset))
+	{
 		lineColor = sf::Color::Red;
 	}
-	else {
+	else
+	{
 		lineColor = sf::Color::Green;
 	}
 	sfLine currentLine(mainPoints.back() - moveVector - areaOffset, mousePosition, lineColor, 3.0);
 	currentLine.draw(target, states);
 }
 
-bool Workspace::CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const {	// sprawdza kolizje lini z wszystkimi pozostalymi liniami
+bool Workspace::CheckAllColisions(sf::Vector2f a, sf::Vector2f b) const
+{	
 
 	for (int i = 1; i < mainPoints.size() - 1; i++) {
-		if (CheckColision(mainPoints[i], mainPoints[i + 1], a, b)) {
+		if (CheckColision(mainPoints[i], mainPoints[i + 1], a, b))
+		{
 			return true;
 		}
 	}
 	return false;
 }
 
-void Workspace::DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const {
-
+void Workspace::DrawCurrentCurve(sf::RenderTarget& target, sf::RenderStates states) const
+{
 	sf::Color lineColor;
 
-	if (CheckBezierColisions()) {
+	if (CheckBezierColisions())
+	{
 		lineColor = sf::Color::Red;
 	}
-	else {
+	else
+	{
 		lineColor = sf::Color::Green;
 	}
-	for (int i = 0; i < bezier->points.size() - 1; i++) {
+	for (int i = 0; i < bezier->points.size() - 1; i++) 
+	{
 		sfLine currentLine(bezier->points[i] - moveVector - areaOffset, bezier->points[i + 1] - moveVector - areaOffset, lineColor, 3.0);
 		currentLine.draw(target, states);
 	}
 }
 
-bool Workspace::CheckBezierColisions()const {
-
-	for (int i = 1; i < bezier->points.size() - 2; i++) {
-		for (int j = mainPoints.size() - 1; j > 0; j--) {
-			if (CheckColision(mainPoints[j], mainPoints[j - 1], bezier->points[i], bezier->points[i + 1])) {
-				std::cout << "Bezier colision detected at " << mainPoints[j].x << " " << mainPoints[j].y << " " <<
-					mainPoints[j - 1].x << " " << mainPoints[j - 1].y << std::endl;
+bool Workspace::CheckBezierColisions()const 
+{
+	for (int i = 1; i < bezier->points.size() - 2; i++)
+	{
+		for (int j = mainPoints.size() - 1; j > 0; j--) 
+		{
+			if (CheckColision(mainPoints[j], mainPoints[j - 1], bezier->points[i], bezier->points[i + 1]))
+			{
+				//std::cout << "Bezier colision detected at " << mainPoints[j].x << " " << mainPoints[j].y << " " <<
+					//mainPoints[j - 1].x << " " << mainPoints[j - 1].y << std::endl;
 				return true;
 			}
 		}
@@ -645,8 +647,8 @@ bool Workspace::CheckBezierColisions()const {
 	return false;
 }
 
-inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const {
-
+inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vector2f a2, sf::Vector2f b2) const
+{
 	// sprawdza kolizje 2 lini:
 // a1-------b1 oraz a2---------b2
 
@@ -666,8 +668,8 @@ inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vecto
 	float numerator1 = ((y1 - y3) * (x4 - x3)) - ((x1 - x3) * (y4 - y3));
 	float numerator2 = ((y1 - y3) * (x2 - x1)) - ((x1 - x3) * (y2 - y1));
 
-	if (denominator == 0) {
-		//std::cout << "Denominator equals 0" << std::endl;
+	if (denominator == 0) 
+	{
 		return false;
 	}
 
@@ -675,39 +677,43 @@ inline bool Workspace::CheckColision(sf::Vector2f a1, sf::Vector2f b1, sf::Vecto
 
 	float r = numerator1 / denominator;
 	float s = numerator2 / denominator;
-	if ((r >= 0 && r < 1) && (s >= 0 && s <= 1)) {
+	if ((r >= 0 && r < 1) && (s >= 0 && s <= 1)) 
+	{
 		/*std::cout << "Colision detected between points : " << x1 << " " << y1 << " " << x2 << " " << y2 << " "
 			<< x3 << " " << y3 << " " << x4 << " " << y4 << std::endl;*/
 	}
 	return (r >= 0 && r < 1) && (s >= 0 && s <= 1);
 }
 
-bool Workspace::AddPoint(int x, int y) {	// dodaje punkt jesli mozna (nie ma kolizji)
+bool Workspace::AddPoint(int x, int y)
+{	
 
-	if (CheckAllColisions(mainPoints.back(), mousePosition + moveVector + areaOffset) == false) {
+	if (CheckAllColisions(mainPoints.back(), mousePosition + moveVector + areaOffset) == false) 
+	{
 		mainPoints.push_back(sf::Vector2f(mousePosition + moveVector + areaOffset));
 		return true;
 	}
 	return false;
 }
 
-void Workspace::UpdateMousePosition(int x, int y) {			// podobno nie potrzebna, potem sie zrobi refaktoryzacje
-
+void Workspace::UpdateMousePosition(int x, int y) 
+{			
 	mousePosition.x = static_cast<double>(x);
 	mousePosition.y = static_cast<double>(y);
 	bezier->setControlPoint(x + moveVector.x + areaOffset.x, y + moveVector.y + areaOffset.y);
 }
 
-void Workspace::DrawDotsGroup(sf::RenderTarget& target, sf::RenderStates states) const {
-	// moze sie przydac 
-}
 
-sf::Vector2f & Workspace::getLastPoint() {
+
+sf::Vector2f & Workspace::getLastPoint() 
+{
 	return mainPoints.back();
 }
 
-void Workspace::PushBesierPoints() {
-	for (std::vector<sf::Vector2f>::const_iterator a = bezier->points.begin(); a != bezier->points.end(); ++a) {
+void Workspace::PushBesierPoints() 
+{
+	for (std::vector<sf::Vector2f>::const_iterator a = bezier->points.begin(); a != bezier->points.end(); ++a)
+	{
 		mainPoints.push_back(*a);
 	}
 }
