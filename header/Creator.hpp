@@ -70,7 +70,7 @@ private:
 	void MouseClick();
 	void MouseReleased();
 	void Exit() { app->event->window->close(); }
-	void GoToMenu() { app->LoadScreen(app->menu); }
+	void GoToMenu() { app->LoadScreen(app->menu); ClearScreen(); isTerrian = true; }
 
 	void CheckPoints();
 	void Blank() {}
