@@ -10,6 +10,7 @@ enum class SegmentType
 
 class Segment : public sf::Drawable
 {
+	friend class App;
 public:
 	Segment() = default;
 	Segment(SegmentType type, sf::Vector2f start, sf::Vector2f end, sf::Vector2f parameter = {})
@@ -85,7 +86,7 @@ public:
 			}
 			points.push_back(end);
 		}
-		count = points.size();
+		count = static_cast<int>(points.size());
 		lines = sf::VertexArray(sf::LinesStrip, count);
 
 		for (int i = 0; i < count; ++i)
@@ -104,7 +105,7 @@ public:
 	sf::FloatRect rect;
 	std::vector<sf::Vector2f> points;
 private:
-	float distance = 5.0f;
+	static constexpr const float distance = 10.0f;
 	int count;
 	sf::VertexArray lines;
 };

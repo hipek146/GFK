@@ -2,11 +2,13 @@
 #include "Config.hpp"
 #include "Event.hpp"
 #include "SFML/Graphics.hpp"
-
+#include "Workspace.hpp"
 class Screen;
 class DialogBox;
 class VectorGUI;
 class TextInput;
+class Data;
+class Workspace;
 
 class App : public sf::Drawable
 {
@@ -23,6 +25,8 @@ public:
 
 	void LoadDialog();
 	void CloseLoadDialog();
+	void WaterInfoDialog();
+	void CloseWaterInfoDialog();
 	void Load();
 	void SaveDialog();
 	void CloseSaveDialog();
@@ -34,6 +38,8 @@ public:
 private:
 	void Blank() {}
 
+	Data *data;
+	Workspace *workspace;
 	Screen *menu;
 	Screen *creator;
 	
@@ -44,6 +50,7 @@ private:
 	VectorGUI *layoutSave;
 	TextInput *textInputSave;
 	DialogBox *loadDialog;
+	DialogBox *waterInfoDialog;
 	DialogBox *saveDialog;
 	sf::Vector2u defaultSizeDialog{ 500, 600 };
 	sf::Vector2u sizeDialog{ defaultSizeDialog };

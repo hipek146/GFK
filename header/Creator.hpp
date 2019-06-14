@@ -6,6 +6,7 @@
 
 class Creator : public Screen {
 
+	friend void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const;
 public:
 
 	Creator(App *parent);
@@ -22,19 +23,21 @@ private:
 		Line,
 		Bezier,
 
-	} drawMode;
+	} drawMode; bool isDraw = true;
 	enum class EditMode
 	{
 		Hill,
 		Hole,
 
-	} editMode;
+	} editMode; bool isEdit = false;
 	enum class WaterMode
 	{
 		Simple,
 		Spill,
 
-	} waterMode;
+	} waterMode; bool isWater = false;
+
+	bool isTerrian = true;
 
 	float editScroll = 50.0f;
 	float waterScroll = 50.0f;
@@ -43,31 +46,34 @@ private:
 	void CreateInterface();
 	void ClearInterface();
 
+	void TerrianON() { isTerrian = true; isWater = false; }
 //Draw Tab
+	void DrawON() { isDraw = true; isEdit = false; }
 	void Section() { drawMode = DrawMode::Line; }
 	void Bezier() { drawMode = DrawMode::Bezier; }
 	void DrawPoints() { CheckPoints(); }
 	void Generator();
 //Edit Tab
+	void EditON() { isDraw = false; isEdit = true;  }
 	void Hill(){ editMode = EditMode::Hill; }
 	void Hole(){ editMode = EditMode::Hole; }
 	void EditPoints() { CheckPoints(); }
 //Water Tab
+	void WaterON() { isWater = true; isTerrian = false; }
 	void SimpleWater() { waterMode = WaterMode::Simple; containerWater->Hide(2); }
 	void SpillWater() { waterMode = WaterMode::Spill; containerWater->Show(2); }
 	void WaterPoints() { CheckPoints(); };
 
+	void OptionsON() {isWater = false; isTerrian = false;}
+
 	void MouseMove();
 	void MouseClick();
+	void MouseReleased();
 	void Exit() { app->event->window->close(); }
-	void GoToMenu() { app->LoadScreen(app->menu); }
+	void GoToMenu() { app->LoadScreen(app->menu); ClearScreen(); isTerrian = true; }
 
 	void CheckPoints();
 	void Blank() {}
-
-
-	void ChangeDrawingTypeToBezier();
-	void ChangeDrawingTypeToLines();
 
 	enum drawingOptions {
 		LINE,
@@ -92,4 +98,9 @@ private:
 	Touchpad *touchpad;
 
 	Data *data;
+
+	bool move = false;
+	bool spill = false;
+	int saveMouseX;
+	int saveMouseY;
 };

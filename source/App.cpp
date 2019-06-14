@@ -21,6 +21,7 @@ App::~App()
 	{
 		delete loadDialog;
 		delete saveDialog;
+		delete waterInfoDialog;
 		screen->ClearScreen();
 	}
 	delete menu;
@@ -37,6 +38,10 @@ void App::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	else if (saveDialog != nullptr)
 	{
 		target.draw(*saveDialog);
+	}
+	if (waterInfoDialog != nullptr)
+	{
+		target.draw(*waterInfoDialog);
 	}
 }
 
@@ -63,6 +68,7 @@ void App::LoadDialog()
 {
 	CloseSaveDialog();
 	CloseLoadDialog();
+	CloseWaterInfoDialog();
 	filenames.clear();
 
 	loadDialog = new DialogBox(screen, L"Wczytaj teren", { sizeDialog }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y) / 2.0f });
@@ -111,6 +117,8 @@ void App::Load()
 {
 	std::wifstream file;
 	file.open(std::wstring(L"saves\\") + filenames[layoutSave->lastPressed]);
+	
+	Segment segment;
 	if (file)
 	{
 		file.seekg(0, file.end);
@@ -120,20 +128,81 @@ void App::Load()
 		file.seekg(0, file.beg);
 		wchar_t *buffer = new wchar_t[length + 1];
 
+		creator->ClearScreen();
+		creator->CreateScreen();
+
 		file.read(buffer, length);
 		buffer[length] = '\0';
+		int y;
+		int x;
+		x = _wtoi(&buffer[0]);
+		bool flag = true;
+		for (int i = 0; i < length; ++i) {
+			if (buffer[i] == '\n' && flag == false) {
+		
+				x = _wtoi(&buffer[i]);
+				flag = true;
+			}
+			else if (buffer[i] == '\n' && flag == true) {
+				y = _wtoi(&buffer[i]);
+				workspace->mainPoints.push_back(sf::Vector2f(x, y));
+				std::cout << x << std::endl << y << std::endl;
+				segment.points.push_back(sf::Vector2f(x, y));
+				flag = false;
+			}
+			
+		}
+		segment.rect = sf::FloatRect({ workspace->mainPoints[0].x, 0 }, sf::Vector2f(size->x, size->y));
+		data->Add(segment);
 
-		//std::wcout << buffer << std::endl;
-
+		workspace->Update();
+		CloseLoadDialog();
+		if (true)
+		{
+			WaterInfoDialog();
+		}
 		file.close();
 		delete[] buffer;
 	}
+}
+void App::WaterInfoDialog()
+{
+	CloseSaveDialog();
+	CloseLoadDialog();
+	CloseWaterInfoDialog();
+
+	waterInfoDialog = new DialogBox(screen, L"Przykra nowina :(", { sf::Vector2u(sizeDialog.x, sizeDialog.y / 2u) }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y / 2u) / 2.0f });
+	VectorGUI *textInfo = new VectorGUI(sizeDialog);
+	textInfo->Add(new TextBox(L"Od Twojego ostatniego pobytu\n walczylismy z susza i cala woda\n\t\t\t\t\twyparowala."), screen, &Screen::Blank);
+	waterInfoDialog->Add(this, textInfo);
+	waterInfoDialog->SetElementSizeY(1, 130.0f);
+	waterInfoDialog->SetPadding(15.0f);
+
+	VectorGUI *buttonInfo = new VectorGUI(sizeDialog);
+	Button *button = new Button("Rozumiem *");
+	buttonInfo->Add(button, screen, &Screen::Blank);
+	event->Add(&button->rect, this, button, &App::CloseWaterInfoDialog, EventType::Pressed);
+	button->SetEvents(screen);
+	button->callbackHandle = std::bind(&App::CloseWaterInfoDialog, this);
+	button->parent = screen;
+	button->parentLayout = buttonInfo;
+
+	waterInfoDialog->Add(this, buttonInfo);
+	waterInfoDialog->SetElementSizeY(2, 100.0f);
+	waterInfoDialog->SetBottom(2);
+}
+
+void App::CloseWaterInfoDialog()
+{
+	delete waterInfoDialog;
+	waterInfoDialog = nullptr;
 }
 
 void App::SaveDialog()
 {
 	CloseSaveDialog();
 	CloseLoadDialog();
+	CloseWaterInfoDialog();
 
 	saveDialog = new DialogBox(screen, L"Zapisz teren", { sizeDialog }, { static_cast<float>(size->x - sizeDialog.x) / 2.0f, static_cast<float>(size->y - sizeDialog.y) / 2.0f });
 
@@ -168,13 +237,22 @@ void App::CloseSaveDialog()
 
 void App::Save()
 {
+	//creator->
 	std::wofstream file;
 	file.open(std::wstring(L"saves\\") + textInputSave->GetString().toWideString());
 	if (file)
 	{
-		file << L"To jest plik o nazwie " << textInputSave->GetString().toWideString();
+		for (auto &it : workspace->mainPoints) {
+
+				file << it.x << "\n" << it.y << "\n";
+
+		}
+		
+		//file << L"To jest plik o nazwie " << textInputSave->GetString().toWideString();
 		file.close();
+
 	}
+
 	CloseSaveDialog();
 }
 

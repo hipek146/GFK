@@ -41,6 +41,12 @@ public:
 	{
 		screen->AddEvent(&(this->rect), screen, this, callback, EventType::Pressed);
 	}
+	template <typename T>
+	void onReleased(T *screen, void(T::*callback)())
+	{
+		screen->AddEvent(&(this->rect), screen, this, callback, EventType::Released);
+	}
+	
 protected:
 	sf::Vector2u *size;
 };

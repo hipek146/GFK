@@ -9,10 +9,7 @@
 #include "SFML/Graphics.hpp"
 
 
-//#define main WinMain
-
-
-int main()
+int WinMain()
 {
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
@@ -22,7 +19,12 @@ int main()
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = config(L"antialiasing");
 
-	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Tytuł", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(config(L"width"), config(L"height")), L"Morfologia Terenu", sf::Style::Default, settings);
+	sf::View view;
+	view.reset(sf::FloatRect(0.0f, 0.0f, (float)(double)config(L"width"), (float)(double)config(L"height")));
+	view.zoom(2.0f);
+	//window.setView(view);
+	
 
 	window.setFramerateLimit(60);
 
@@ -43,4 +45,9 @@ int main()
 		window.display();
 	}
 	return 0;
+}
+
+int main()
+{
+	return WinMain();
 }
