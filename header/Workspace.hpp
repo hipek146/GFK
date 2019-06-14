@@ -73,6 +73,7 @@ class Workspace : public sf::Drawable {
 		sf::Vector2i simpleWater;
 		bool isSimpleWater = false;
 		bool async = false;
+		bool *isDraw;
 };
 
 

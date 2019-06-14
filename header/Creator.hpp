@@ -6,7 +6,7 @@
 
 class Creator : public Screen {
 
-
+	friend void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const;
 public:
 
 	Creator(App *parent);

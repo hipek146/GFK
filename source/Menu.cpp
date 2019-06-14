@@ -14,6 +14,7 @@ void Menu::Pressed(MenuPressed pressed)
 	switch (pressed)
 	{
 	case MenuPressed::Load:
+		app->LoadScreen(app->creator);
 		app->LoadDialog();
 		break;
 	case MenuPressed::Creator:

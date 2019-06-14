@@ -13,13 +13,15 @@ void Workspace::draw(sf::RenderTarget& target, sf::RenderStates states)const {
 	//	FillSpaceBetweenPoints(target, states);		todo
 		//DrawLinesGroup(target, states);				// rysuje utworzone linie
 		//if
-	if (bezier->isControlPoint) {
-		bezier->CalcQuadBezier();
-		DrawCurrentCurve(target, states);
-	}
-	else
-		DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
-//	DrawDotsGroup(target, states);				// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
+	if ((*isDraw) == true) {
+		if (bezier->isControlPoint) {
+			bezier->CalcQuadBezier();
+			DrawCurrentCurve(target, states);
+		}
+		else
+			DrawCurrentLine(target, states);	// rysuje linie tymczasowa, podglad gdzie sie pojawi jak nacisniemy LPM
+	//	DrawDotsGroup(target, states);			
+	}// puste, bedzie mozna potem zrobic jakies kropki czy co tam chcemy
 
 }
 void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowania
@@ -89,7 +91,7 @@ void Workspace::Update(bool waterFlag) //Uaktualnia punkty i teksture do rysowan
 			async = false;
 			return;
 		}
-		minY += 100;
+		minY = size->y;
 		visiblePoints.insert(visiblePoints.begin(), { minX, visiblePoints[0].y });
 		visiblePoints.insert(visiblePoints.begin(), { minX, minY });
 

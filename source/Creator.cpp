@@ -33,6 +33,7 @@ void Creator::CreateScreen()
 	app->data = data;
 	workspace = new Workspace(data, &workspaceSize, &workspacePosition);
 	app->workspace = workspace;
+	workspace->isDraw = &isTerrian;
 
 
 }
@@ -262,6 +263,7 @@ void Creator::MouseMove()
 		workspace->Update();
 		return;
 	}
+
 }
 
 void Creator::MouseReleased()
